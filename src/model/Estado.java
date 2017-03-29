@@ -1,5 +1,7 @@
 package model;
 
+import java.util.ArrayList;
+
 /**
  * Created by Sebas on 28/03/2017.
  */
@@ -9,7 +11,19 @@ public class Estado {
     private boolean esAceptacion;
     private boolean esError;
     private boolean esInicial;
-    private Transicion transiciones[];
+    private ArrayList<Transicion> transiciones;
+
+    public Estado(String nombre){
+        transiciones = new ArrayList<>();
+        this.nombre=nombre;
+        initValues();
+    }
+
+    private void initValues(){
+        esAceptacion = false;
+        esError = false;
+        esInicial = false;
+    }
 
     public String getNombre() {
         return nombre;
@@ -43,11 +57,15 @@ public class Estado {
         this.esInicial = esInicial;
     }
 
-    public Transicion[] getTransiciones() {
+    public ArrayList<Transicion> getTransiciones() {
         return transiciones;
     }
 
-    public void setTransiciones(Transicion[] transiciones) {
+    public void setTransiciones(ArrayList<Transicion> transiciones) {
         this.transiciones = transiciones;
+    }
+
+    public void addTransicion(Transicion t){
+        transiciones.add(t);
     }
 }

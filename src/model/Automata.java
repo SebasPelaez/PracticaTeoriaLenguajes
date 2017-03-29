@@ -1,18 +1,25 @@
 package model;
 
+import java.util.ArrayList;
+
 /**
  * Created by Sebas on 28/03/2017.
  */
 public class Automata {
 
-    private Estado estados[];
-    private String simbolos[];
+    private ArrayList<Estado> estados;
+    private String[] simbolos;
 
-    public Estado[] getEstados() {
+    public Automata(ArrayList<Estado> estados, String[] simbolos){
+        this.estados = estados;
+        this.simbolos = simbolos;
+    }
+
+    public ArrayList<Estado> getEstados() {
         return estados;
     }
 
-    public void setEstados(Estado[] estados) {
+    public void setEstados(ArrayList<Estado> estados) {
         this.estados = estados;
     }
 
