@@ -1,5 +1,8 @@
 package model;
 
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.value.ObservableValue;
+
 /**
  * Created by Sebas on 28/03/2017.
  */
@@ -10,6 +13,13 @@ public class Estado {
     private boolean esError;
     private boolean esInicial;
     private Transicion transiciones[];
+
+    public Estado(String nombre, boolean esAceptacion, boolean esError, boolean esInicial) {
+        this.nombre = nombre;
+        this.esAceptacion = esAceptacion;
+        this.esError = esError;
+        this.esInicial = esInicial;
+    }
 
     public String getNombre() {
         return nombre;
@@ -50,4 +60,5 @@ public class Estado {
     public void setTransiciones(Transicion[] transiciones) {
         this.transiciones = transiciones;
     }
+
 }
