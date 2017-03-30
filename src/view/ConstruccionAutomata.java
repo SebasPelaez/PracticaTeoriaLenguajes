@@ -1,18 +1,18 @@
 package view;
 
-import com.sun.org.apache.xpath.internal.operations.Bool;
-import javafx.beans.property.BooleanProperty;
+import handler.HandlerFile;
 import javafx.beans.property.ReadOnlyBooleanWrapper;
 import javafx.beans.value.ObservableValue;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
 import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
@@ -38,6 +38,7 @@ public class ConstruccionAutomata {
 
     public void initComponents(){
         Stage ventana =  new Stage();
+        new HandlerFile(ventana);
         ventana.initModality(Modality.APPLICATION_MODAL);
         ventana.setTitle("Creación Autómata");
         ventana.setWidth(400);
@@ -47,6 +48,7 @@ public class ConstruccionAutomata {
         layout.setAlignment(Pos.CENTER);
 
         Scene scene = new Scene(new Group());
+        scene.getStylesheets().add("view/style.css");
 
         simbolosAutomata = new TextField();
         simbolosAutomata.setPromptText("Ingrese los símbolos del autómata");
@@ -55,10 +57,12 @@ public class ConstruccionAutomata {
         addButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent e) {
-                Estado p1 = new Estado("Juan", false,false,false);
+                Estado p1 = new Estado("Juan");
                 table.getItems().addAll(p1);
             }
         });
+
+
 
         TableColumn<Estado, String> colNombre = new TableColumn<>("Nombre");
         colNombre.setCellFactory(TextFieldTableCell.forTableColumn());
@@ -74,9 +78,9 @@ public class ConstruccionAutomata {
         colAceptacion.setCellValueFactory(new PropertyValueFactory<>("Aceptación"));
         colError.setCellValueFactory(new PropertyValueFactory<>("Error"));
 
-        Estado p1 = new Estado("Juan", false,false,false);
-        Estado p2 = new Estado("Juan", false,false,false);
-        Estado p3 = new Estado("Juan", false,false,false);
+        Estado p1 = new Estado("Juan");
+        Estado p2 = new Estado("Juan");
+        Estado p3 = new Estado("Juan");
 
         table.setEditable(true);
         table.getItems().addAll(p1, p2, p3);
