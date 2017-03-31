@@ -6,9 +6,7 @@ import model.Automata;
 import model.Estado;
 import model.Transicion;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
+import java.io.*;
 import java.util.ArrayList;
 
 /**
@@ -19,19 +17,22 @@ public class HandlerFile {
     private FileChooser fileChooser;
     private ArrayList<Estado> estadosObjecto;
     private String[] simbolos;
+    private File file;
+    private Stage stage;
+
     public HandlerFile(Stage s){
+        stage = s;
+    }
+
+    public Automata crearAutomata() throws IOException {
         fileChooser = new FileChooser();
         fileChooser.setTitle("Open Resource File");
         fileChooser.getExtensionFilters().addAll(
                 new FileChooser.ExtensionFilter("text", "*.txt")
         );
-        File file = fileChooser.showOpenDialog(s);
-        procesarAutomata(file);
-        returnAutomata(estadosObjecto,simbolos);
-    }
-
-    private void procesarAutomata(File f){
+        file = fileChooser.showOpenDialog(stage);
         FileReader fr = null;
+        BufferedReader br = null;
         String linea;
         String[] estados;
         String[] splitInicial;
@@ -42,8 +43,8 @@ public class HandlerFile {
         Estado e;
         int i =1;
         try {
-            fr = new FileReader(f);
-            BufferedReader br = new BufferedReader(fr);
+            fr = new FileReader(file);
+            br = new BufferedReader(fr);
             linea = br.readLine();
             while(linea!= null) {
                 switch (i) {
@@ -75,7 +76,14 @@ public class HandlerFile {
             }
         } catch (Exception ex) {
             System.out.println("No existe el archivo");;
+        }finally {
+            try {
+                br.close();
+            } catch (Exception e2) {
+                System.out.println(e2);
+            }
         }
+        return new Automata(estadosObjecto,simbolos);
     }
 
     private ArrayList<Estado> CrearEstados(String[] s){
@@ -84,27 +92,27 @@ public class HandlerFile {
         for (int i = 0; i < s.length; i++) {
             String id = s[i].substring(0,1);
             switch (id){
-                case "*":
+                case "*":  //estado de aceptacion
                     e = new Estado(s[i].substring(1));
                     e.setEsAceptacion(true);
                     break;
-                case "!":
+                case "!":  //estado inicial
                     e = new Estado(s[i].substring(1));
                     e.setEsInicial(true);
                     break;
 
-                case "$":
+                case "$": // estado de aceptacion e inicial
                     e = new Estado(s[i].substring(1));
                     e.setEsAceptacion(true);
                     e.setEsInicial(true);
                     break;
-                case "%":
+                case "%": //estado de error
                     e = new Estado(s[i].substring(1));
                     e.setEsError(true);
                     break;
 
                 default:
-                    e = new Estado(id);
+                    e = new Estado(s[i]);
                 break;
             }
             a.add(e);
@@ -135,9 +143,83 @@ public class HandlerFile {
         return e;
     }
 
-    public Automata returnAutomata(ArrayList<Estado> estados, String[] simbolosIN){
-        return new Automata(estados,simbolosIN);
+
+
+    public void guardarAutomata(Automata a){
+        FileChooser fileChooser = new FileChooser();
+        file = fileChooser.showSaveDialog(stage);
+        String linea="";
+        int i;
+        try{
+            FileWriter w = new FileWriter(file);
+            BufferedWriter bw = new BufferedWriter(w);
+            for ( i = 0; i < a.getEstados().size(); i++) {
+                Estado e = a.getEstados().get(i);
+                if(e.isEsAceptacion()){
+                    if(e.isEsInicial()){
+                        linea += "$"+e.getNombre()+",";
+                    }else{
+                        linea += "*"+e.getNombre()+",";
+                    }
+
+                }else{
+                    if (e.isEsError()){
+                        linea += "%"+e.getNombre()+",";
+                    }else{
+                        if (e.isEsInicial()){
+                            linea += "!"+e.getNombre()+",";
+                        }else{
+                            linea +=e.getNombre()+",";
+                        }
+
+                    }
+
+                }
+
+            }
+            linea = linea.substring(0,linea.length()-1);
+            bw.write(linea);
+            bw.newLine();
+            linea = "";
+            String b;
+            for (i = 0; i < simbolos.length; i++) {
+                b = simbolos[i];
+                linea += b+",";
+            }
+            linea = linea.substring(0,linea.length()-1);
+            bw.write(linea);
+            bw.newLine();
+            linea = "";
+            for (i = 0; i <  a.getEstados().size(); i++) {
+                Estado estadoActual = a.getEstados().get(i);
+                int ts = estadoActual.getTransiciones().size();
+                linea += estadoActual.getNombre()+"-";
+                for (int j = 0; j < ts; j++) {
+                    Transicion transActual = estadoActual.getTransiciones().get(j);
+                    linea += transActual.getSimbolo()+":";
+                    int eft = transActual.getEstadosFinales().size();
+                    for (int k = 0; k < eft ; k++) {
+                        Estado estadoFinalActual = transActual.getEstadosFinales().get(k);
+                        linea += estadoFinalActual.getNombre()+",";
+                    }
+                    linea = linea.substring(0,linea.length()-1);
+                    System.out.println(linea);
+                    bw.write(linea);
+                    bw.newLine();
+                    linea = estadoActual.getNombre()+"-";
+                }
+                linea="";
+            }
+
+
+
+            bw.close();
+        }catch(IOException e){
+            System.out.println(e);
+        }
+
     }
 
-
 }
+
+

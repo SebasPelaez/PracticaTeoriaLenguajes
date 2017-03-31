@@ -1,10 +1,12 @@
 package Main;
 
+import handler.HandlerFile;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import model.Automata;
 
 public class Main extends Application {
 
@@ -16,11 +18,9 @@ public class Main extends Application {
         primaryStage.setScene(new Scene(root, 500, 500));
         primaryStage.show();
 
-
-
-        //ConstruccionAutomata c = new ConstruccionAutomata();
-        //c.desplegarVentana();
-
+        //HandlerFile hf = new HandlerFile(primaryStage);
+        //Automata a = hf.crearAutomata();
+        //a.reconocerSecuencia("");
 
     }
 
