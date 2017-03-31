@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.*?>
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<Pane fx:id="layout" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="407.0" prefWidth="501.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="handler.ConstruccionEstados_Handler">
+   <children>
+      <JFXTextField fx:id="txtSimbolos" layoutX="14.0" layoutY="22.0" prefHeight="25.0" prefWidth="475.0" promptText="Ingrese los símbolos de entrada separados por coma(,)" />
+      <JFXButton fx:id="btnAnadir" layoutX="14.0" layoutY="361.0" onAction="#agregarEstado" prefHeight="25.0" prefWidth="179.0" text="Agregar Estado" />
+      <JFXButton fx:id="btnTransiciones" layoutX="307.0" layoutY="361.0" onAction="#construirTransiciones" prefHeight="25.0" prefWidth="179.0" text="Construir Transiciones" />
+      <TableView fx:id="tableView" layoutX="14.0" layoutY="57.0" prefHeight="291.0" prefWidth="475.0"/>
+   </children>
+</Pane>

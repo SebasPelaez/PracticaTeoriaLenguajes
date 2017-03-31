@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.*?>
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+
+<AnchorPane prefHeight="365.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="handler.ConstruccionTransiciones_Handler">
+   <children>
+      <TableView fx:id="tableView" layoutX="14.0" layoutY="14.0" prefHeight="261.0" prefWidth="568.0" />
+      <JFXButton fx:id="btnGuardar" layoutX="200.0" layoutY="304.0" text="Finalizar construcción de autómata"/>
+   </children>
+</AnchorPane>
