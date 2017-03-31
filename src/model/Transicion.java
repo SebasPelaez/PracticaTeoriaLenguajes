@@ -35,4 +35,8 @@ public class Transicion {
         estadosFinales.add(e);
     }
 
+    public int numeroEstadosFinales(){
+        return estadosFinales.size();
+    }
+
 }

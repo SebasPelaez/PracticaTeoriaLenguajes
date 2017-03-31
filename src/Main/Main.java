@@ -22,8 +22,8 @@ public class Main extends Application {
 
         HandlerFile hf = new HandlerFile(primaryStage);
         Automata a = hf.crearAutomata();
-        hf.guardarAutomata(a);
-        primaryStage.close();
+        a.reconocerSecuencia("");
+
     }
 
 

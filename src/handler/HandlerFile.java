@@ -92,27 +92,27 @@ public class HandlerFile {
         for (int i = 0; i < s.length; i++) {
             String id = s[i].substring(0,1);
             switch (id){
-                case "*":
+                case "*":  //estado de aceptacion
                     e = new Estado(s[i].substring(1));
                     e.setEsAceptacion(true);
                     break;
-                case "!":
+                case "!":  //estado inicial
                     e = new Estado(s[i].substring(1));
                     e.setEsInicial(true);
                     break;
 
-                case "$":
+                case "$": // estado de aceptacion e inicial
                     e = new Estado(s[i].substring(1));
                     e.setEsAceptacion(true);
                     e.setEsInicial(true);
                     break;
-                case "%":
+                case "%": //estado de error
                     e = new Estado(s[i].substring(1));
                     e.setEsError(true);
                     break;
 
                 default:
-                    e = new Estado(id);
+                    e = new Estado(s[i]);
                 break;
             }
             a.add(e);
@@ -142,6 +142,8 @@ public class HandlerFile {
         }
         return e;
     }
+
+
 
     public void guardarAutomata(Automata a){
         FileChooser fileChooser = new FileChooser();

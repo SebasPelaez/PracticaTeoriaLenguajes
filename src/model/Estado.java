@@ -68,4 +68,7 @@ public class Estado {
     public void addTransicion(Transicion t){
         transiciones.add(t);
     }
+
+
+
 }
