@@ -1,7 +1,8 @@
-package handler;
+package view;
 
 import Main.Main;
 import com.jfoenix.controls.*;
+import handler.Handler_ConstruirEstados;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -25,13 +26,15 @@ import java.util.ResourceBundle;
 /**
  * Created by Sebas on 29/03/2017.
  */
-public class ConstruccionEstados_Handler implements Initializable {
+public class ConstruccionEstados implements Initializable {
 
     @FXML private Pane layout;
     @FXML private TableView<Estado> tableView;
     @FXML private JFXTextField txtSimbolos;
     @FXML private JFXButton btnAnadir;
     @FXML private JFXButton btnTransiciones;
+
+    private Handler_ConstruirEstados controller;
 
     @FXML private void agregarEstado(ActionEvent evento){
         Estado p1 = new Estado("Ingrese el estado aquí",false,false,false);
@@ -40,11 +43,19 @@ public class ConstruccionEstados_Handler implements Initializable {
 
     @FXML private void construirTransiciones(ActionEvent evento) throws IOException {
        //paso a la siguiente ventana
-        transiciones(evento);
+        //transiciones(evento);
+        controller.agregarEstados(tableView.getItems());
+        if(!controller.estaVaciaCadena(txtSimbolos.getText()) && controller.validarCadena(txtSimbolos.getText()).equals("")){
+            controller.agregarSimbolos(txtSimbolos.getText());
+            controller.imprimirSimbolos();
+            transiciones(evento);
+        }
     }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+
+        controller = new Handler_ConstruirEstados();
 
         TableColumn<Estado, String> colNombre = new TableColumn<>("Nombre");
         TableColumn<Estado, Boolean> colInicial = new TableColumn<>("Inicial");
@@ -55,22 +66,19 @@ public class ConstruccionEstados_Handler implements Initializable {
         colNombre.setCellValueFactory(new PropertyValueFactory<>("Nombre"));
         colNombre.setPrefWidth(210);
 
-        colInicial.setCellFactory(CheckBoxTableCell.forTableColumn(colInicial));
-        colInicial.setCellValueFactory(new PropertyValueFactory<>("Inicial"));
         colInicial.setCellValueFactory(cell -> cell.getValue().inicialProperty());
+        colInicial.setCellFactory(CheckBoxTableCell.forTableColumn(colInicial));
         colInicial.setPrefWidth(90);
 
-        colAceptacion.setCellFactory(CheckBoxTableCell.forTableColumn(colAceptacion));
-        colAceptacion.setCellValueFactory(new PropertyValueFactory<>("Aceptación"));
         colAceptacion.setCellValueFactory(cell -> cell.getValue().aceptacionProperty());
+        colAceptacion.setCellFactory(CheckBoxTableCell.forTableColumn(colAceptacion));
         colAceptacion.setPrefWidth(90);
 
-        colError.setCellFactory(CheckBoxTableCell.forTableColumn(colError));
-        colError.setCellValueFactory(new PropertyValueFactory<>("Error"));
         colError.setCellValueFactory(cell -> cell.getValue().errorProperty());
+        colError.setCellFactory(CheckBoxTableCell.forTableColumn(colError));
         colError.setPrefWidth(90);
 
-        tableView.getColumns().addAll(colNombre, colInicial, colAceptacion,colError);
+        tableView.getColumns().addAll(colNombre,colAceptacion,colInicial,colError);
         tableView.setEditable(true);
 
         colNombre.setOnEditCommit(data -> {

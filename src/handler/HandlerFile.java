@@ -83,7 +83,9 @@ public class HandlerFile {
                 System.out.println(e2);
             }
         }
-        return new Automata(estadosObjecto,simbolos);
+        Automata.getInstance().setEstados(estadosObjecto);
+        Automata.getInstance().setSimbolos(simbolos);
+        return Automata.getInstance();
     }
 
     private ArrayList<Estado> CrearEstados(String[] s){
