@@ -11,19 +11,30 @@ import model.Automata;
 
 public class Main extends Application {
 
+    private static Stage primaryStage;
+
+    private void setPrimaryStage(Stage stage) {
+        Main.primaryStage = stage;
+    }
+
+    static public Stage getPrimaryStage() {
+        return Main.primaryStage;
+    }
+
     @Override
     public void start(Stage primaryStage) throws Exception{
-
-        /*
+        setPrimaryStage(primaryStage); // **Set the Stage**
         Parent root = FXMLLoader.load(getClass().getClassLoader().getResource("view/ConstruccionEstados_View.fxml"));
         primaryStage.setTitle("Peppin World");
         primaryStage.setScene(new Scene(root, 500, 500));
-        primaryStage.show();*/
+        primaryStage.show();
 
+        /*
         Handler_Automata automata = new Handler_Automata();
         HandlerFile hf = new HandlerFile(primaryStage);
         hf.crearAutomata();
         automata.simplificarAutomata();
+        */
 
     }
 

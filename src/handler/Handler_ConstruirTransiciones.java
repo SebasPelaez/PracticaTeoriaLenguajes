@@ -1,6 +1,11 @@
 package handler;
 
 import javafx.collections.ObservableList;
+import model.Automata;
+import model.Estado;
+import model.Transicion;
+
+import java.util.ArrayList;
 
 /**
  * Created by Sebas on 2/04/2017.
@@ -8,11 +13,31 @@ import javafx.collections.ObservableList;
 public class Handler_ConstruirTransiciones {
 
     public void guardarAutomata(ObservableList data){
-        System.out.println("----------------");
+        Transicion transicion;
         for (int i=0;i<data.size();i++){
-            System.out.println(data.get(i));
-            System.out.println(data.get(i).toString().charAt(2));
+            if (data.get(i) instanceof String[]) {
+                String[] transiciones = (String[]) data.get(i);
+                for (int j=1;j<transiciones.length;j++){
+                    int dir=direccionEstado(transiciones[j]);
+                    transicion = new Transicion(Automata.getInstance().getSimbolos()[j-1]);
+                    transicion.agregarEstadoFinal(Automata.getInstance().getEstados().get(dir));
+                    Automata.getInstance().getEstados().get(dir).addTransicion(transicion);
+                }
+            }
         }
+        Handler_Automata automata = new Handler_Automata();
+        automata.simplificarAutomata();
+        System.out.println("YAAAAAAA");
+    }
+
+    public int direccionEstado(String valorEstado){
+        ArrayList<Estado> estados = Automata.getInstance().getEstados();
+        for (int i=0;i<estados.size();i++){
+            if(estados.get(i).getNombre().equals(valorEstado)){
+                return i;
+            }
+        }
+        return -1;
     }
 
 }

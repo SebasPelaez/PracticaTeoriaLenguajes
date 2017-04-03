@@ -2,11 +2,13 @@ package view;
 
 import com.jfoenix.controls.JFXButton;
 import handler.Handler_ConstruirTransiciones;
+import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
+import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.TableColumn;
@@ -18,6 +20,8 @@ import model.Estado;
 
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.ResourceBundle;
 
 /**
@@ -25,12 +29,13 @@ import java.util.ResourceBundle;
  */
 public class ConstruccionTransiciones implements Initializable {
 
-    @FXML private TableView tableView;
+    @FXML private TableView<String[]> tableView;
     @FXML private JFXButton btnGuardar;
 
     private int simbolosEntrada;
-    private ObservableList<ObservableList> datos;
+    private ObservableList<String[]> datos;
     private Handler_ConstruirTransiciones controller;
+    private List<String[]> jdata;
 
     @FXML private void guardarAutomata(ActionEvent evento){
         controller.guardarAutomata(tableView.getItems());
@@ -40,45 +45,54 @@ public class ConstruccionTransiciones implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         controller = new Handler_ConstruirTransiciones();
         datos = FXCollections.observableArrayList();
+        jdata = new LinkedList<>(); //Here is the data
         simbolosEntrada = 0;
         inicializarColumnas();
         agregarFilas();
-        tableView.setItems(datos);
+        tableView.getItems().addAll(datos);
         tableView.setEditable(true);
     }
 
     private void agregarFilas() {
         for (int j=0;j<Automata.getInstance().getEstados().size();j++) {
-            ObservableList<String> estados = FXCollections.observableArrayList();
+            String[] estados = new String[simbolosEntrada];
             for (int i = 0; i < simbolosEntrada; i++) {
                 if(i==0){
-                    estados.add(Automata.getInstance().getEstados().get(j).getNombre());
+                    estados[i]=Automata.getInstance().getEstados().get(j).getNombre();
                 }else{
-                    estados.add("Transición");
+                    estados[i]="Transición";
                 }
             }
-            datos.add(estados);
+            jdata.add(estados);
         }
+        datos = FXCollections.observableList(jdata);
     }
 
     public void inicializarColumnas(){
-        TableColumn columna;
         for (int i=0;i<=Automata.getInstance().getSimbolos().length;i++){
-            final int j = i;
+            TableColumn<String[], String> columna;
+            int j = i;
             if(i==0){
-                columna = new TableColumn("Estado/Símbolo");
+                columna  = new TableColumn<>("Estado/Símbolo");
                 columna.setPrefWidth(120);
             }else{
-                columna = new TableColumn(Automata.getInstance().getSimbolos()[i-1]);
+                columna = new TableColumn<>(Automata.getInstance().getSimbolos()[i-1]);
                 columna.setCellFactory(TextFieldTableCell.forTableColumn());
                 columna.setPrefWidth(70);
             }
-            columna.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<ObservableList,String>,ObservableValue<String>>(){
-                public ObservableValue<String> call(TableColumn.CellDataFeatures<ObservableList, String> param) {
-                    return new SimpleStringProperty(param.getValue().get(j).toString());
+            columna.setCellValueFactory(cellData -> {
+                String[] rowData = cellData.getValue();
+                if (j >= rowData.length) {
+                    return new ReadOnlyStringWrapper("");
+                } else {
+                    String cellValue = rowData[j];
+                    return new ReadOnlyStringWrapper(cellValue);
                 }
             });
-
+            columna.setOnEditCommit(event -> {
+                String[] row = event.getRowValue();
+                row[j] = event.getNewValue();
+            });
             tableView.getColumns().addAll(columna);
             simbolosEntrada++;
         }

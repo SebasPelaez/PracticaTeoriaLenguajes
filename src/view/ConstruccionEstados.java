@@ -6,6 +6,7 @@ import handler.Handler_ConstruirEstados;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.print.PrinterJob;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -17,6 +18,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.event.ActionEvent;
 import javafx.stage.Stage;
+import javafx.stage.Window;
 import model.Estado;
 
 import java.io.IOException;
@@ -28,28 +30,37 @@ import java.util.ResourceBundle;
  */
 public class ConstruccionEstados implements Initializable {
 
-    @FXML private Pane layout;
-    @FXML private TableView<Estado> tableView;
-    @FXML private JFXTextField txtSimbolos;
-    @FXML private JFXButton btnAnadir;
-    @FXML private JFXButton btnTransiciones;
+    @FXML
+    private Pane layout;
+    @FXML
+    private TableView<Estado> tableView;
+    @FXML
+    private JFXTextField txtSimbolos;
+    @FXML
+    private JFXButton btnAnadir;
+    @FXML
+    private JFXButton btnTransiciones;
 
     private Handler_ConstruirEstados controller;
 
-    @FXML private void agregarEstado(ActionEvent evento){
-        Estado p1 = new Estado("Ingrese el estado aquí",false,false,false);
+    @FXML
+    private void agregarEstado(ActionEvent evento) {
+        Estado p1 = new Estado("Ingrese el estado aquí", false, false, false);
         tableView.getItems().addAll(p1);
     }
 
-    @FXML private void construirTransiciones(ActionEvent evento) throws IOException {
-       //paso a la siguiente ventana
-        //transiciones(evento);
+    @FXML
+    private void construirTransiciones(ActionEvent evento) throws IOException {
+        //paso a la siguiente ventana
         controller.agregarEstados(tableView.getItems());
-        if(!controller.estaVaciaCadena(txtSimbolos.getText()) && controller.validarCadena(txtSimbolos.getText()).equals("")){
+        if (!controller.estaVaciaCadena(txtSimbolos.getText()) && controller.validarCadena(txtSimbolos.getText()).equals("")) {
             controller.agregarSimbolos(txtSimbolos.getText());
             controller.imprimirSimbolos();
             transiciones(evento);
         }
+        /*
+        Node source = (Node) evento.getSource();
+        print(source.getParent());*/
     }
 
     @Override
@@ -78,7 +89,7 @@ public class ConstruccionEstados implements Initializable {
         colError.setCellFactory(CheckBoxTableCell.forTableColumn(colError));
         colError.setPrefWidth(90);
 
-        tableView.getColumns().addAll(colNombre,colAceptacion,colInicial,colError);
+        tableView.getColumns().addAll(colNombre, colAceptacion, colInicial, colError);
         tableView.setEditable(true);
 
         colNombre.setOnEditCommit(data -> {
@@ -88,11 +99,25 @@ public class ConstruccionEstados implements Initializable {
     }
 
     private void transiciones(ActionEvent event) throws IOException {
-        Parent home_parent =  FXMLLoader.load(getClass().getClassLoader().getResource("view/ConstruccionTransiciones_View.fxml"));
+        Parent home_parent = FXMLLoader.load(getClass().getClassLoader().getResource("view/ConstruccionTransiciones_View.fxml"));
         Scene home_scene = new Scene(home_parent);
-        Stage app_stage = (Stage)((Node)event.getSource()).getScene().getWindow();
+        Stage app_stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         app_stage.hide();
         app_stage.setScene(home_scene);
         app_stage.show();
     }
+
+    private void print(Node node){
+        // Create a printer job for the default printer
+        PrinterJob job = PrinterJob.createPrinterJob();
+        if (job != null) {
+            // Print the node
+            boolean printed = job.printPage(node);
+            if (printed) {
+                // End the printer job
+                job.endJob();
+            }
+        }
+    }
+
 }

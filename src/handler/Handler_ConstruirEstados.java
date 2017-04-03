@@ -41,10 +41,14 @@ public class Handler_ConstruirEstados {
     public void agregarEstados(ObservableList<Estado> observableEstados){
         ArrayList<Estado> estados = new ArrayList<>();
         for (int i=0;i<observableEstados.size();i++){
-            estados.add(new Estado(observableEstados.get(i).getNombre(),
+            Estado e = new Estado(observableEstados.get(i).getNombre(),
                     observableEstados.get(i).is_Aceptacion(),
                     observableEstados.get(i).is_error(),
-                    observableEstados.get(i).is_inicial()));
+                    observableEstados.get(i).is_inicial());
+            e.setEsAceptacion(observableEstados.get(i).is_Aceptacion());
+            e.setEsInicial(observableEstados.get(i).is_inicial());
+            e.setEsError(observableEstados.get(i).is_error());
+            estados.add(e);
         }
         automata.setEstados(estados);
         for (int i=0;i<automata.getEstados().size();i++){
