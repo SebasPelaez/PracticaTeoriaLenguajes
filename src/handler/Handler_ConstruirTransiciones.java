@@ -1,5 +1,6 @@
 package handler;
 
+import com.sun.scenario.effect.impl.sw.sse.SSEBlend_SRC_OUTPeer;
 import javafx.collections.ObservableList;
 import model.Automata;
 import model.Estado;
@@ -21,11 +22,12 @@ public class Handler_ConstruirTransiciones {
                     int dir=direccionEstado(transiciones[j]);
                     transicion = new Transicion(Automata.getInstance().getSimbolos()[j-1]);
                     transicion.agregarEstadoFinal(Automata.getInstance().getEstados().get(dir));
-                    Automata.getInstance().getEstados().get(dir).addTransicion(transicion);
+                    Automata.getInstance().getEstados().get(i).addTransicion(transicion);
                 }
             }
         }
         Handler_Automata automata = new Handler_Automata();
+        automata.imprimirAutomata();
         automata.simplificarAutomata();
         System.out.println("YAAAAAAA");
     }

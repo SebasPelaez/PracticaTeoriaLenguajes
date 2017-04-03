@@ -3,7 +3,6 @@ package handler;
 import javafx.collections.ObservableList;
 import model.Automata;
 import model.Estado;
-
 import java.util.ArrayList;
 import java.util.StringTokenizer;
 
