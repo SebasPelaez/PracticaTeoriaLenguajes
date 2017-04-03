@@ -24,7 +24,7 @@ public class HandlerFile {
         stage = s;
     }
 
-    public Automata crearAutomata() throws IOException {
+    public void crearAutomata() throws IOException {
         fileChooser = new FileChooser();
         fileChooser.setTitle("Open Resource File");
         fileChooser.getExtensionFilters().addAll(
@@ -85,7 +85,6 @@ public class HandlerFile {
         }
         Automata.getInstance().setEstados(estadosObjecto);
         Automata.getInstance().setSimbolos(simbolos);
-        return Automata.getInstance();
     }
 
     private ArrayList<Estado> CrearEstados(String[] s){
@@ -147,7 +146,7 @@ public class HandlerFile {
 
 
 
-    public void guardarAutomata(Automata a){
+    public void guardarAutomata(){
         FileChooser fileChooser = new FileChooser();
         file = fileChooser.showSaveDialog(stage);
         String linea="";
@@ -155,8 +154,8 @@ public class HandlerFile {
         try{
             FileWriter w = new FileWriter(file);
             BufferedWriter bw = new BufferedWriter(w);
-            for ( i = 0; i < a.getEstados().size(); i++) {
-                Estado e = a.getEstados().get(i);
+            for ( i = 0; i < Automata.getInstance().getEstados().size(); i++) {
+                Estado e = Automata.getInstance().getEstados().get(i);
                 if(e.isEsAceptacion()){
                     if(e.isEsInicial()){
                         linea += "$"+e.getNombre()+",";
@@ -192,8 +191,8 @@ public class HandlerFile {
             bw.write(linea);
             bw.newLine();
             linea = "";
-            for (i = 0; i <  a.getEstados().size(); i++) {
-                Estado estadoActual = a.getEstados().get(i);
+            for (i = 0; i <  Automata.getInstance().getEstados().size(); i++) {
+                Estado estadoActual = Automata.getInstance().getEstados().get(i);
                 int ts = estadoActual.getTransiciones().size();
                 linea += estadoActual.getNombre()+"-";
                 for (int j = 0; j < ts; j++) {
@@ -212,9 +211,6 @@ public class HandlerFile {
                 }
                 linea="";
             }
-
-
-
             bw.close();
         }catch(IOException e){
             System.out.println(e);
