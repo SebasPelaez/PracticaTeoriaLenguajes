@@ -1,6 +1,7 @@
 package view;
 
 import com.jfoenix.controls.JFXButton;
+import handler.HandlerFile;
 import handler.Handler_ConstruirTransiciones;
 import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.beans.property.SimpleStringProperty;
@@ -11,9 +12,11 @@ import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.TextFieldTableCell;
+import javafx.stage.Stage;
 import javafx.util.Callback;
 import model.Automata;
 import model.Estado;
@@ -39,6 +42,7 @@ public class ConstruccionTransiciones implements Initializable {
 
     @FXML private void guardarAutomata(ActionEvent evento){
         controller.guardarAutomata(tableView.getItems());
+
     }
 
     @Override

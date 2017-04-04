@@ -145,6 +145,7 @@ public class HandlerFile {
     }
 
     public void guardarAutomata(){
+        simbolos = Automata.getInstance().getSimbolos();
         FileChooser fileChooser = new FileChooser();
         file = fileChooser.showSaveDialog(stage);
         String linea="";

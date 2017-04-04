@@ -14,26 +14,25 @@ public class Handler_ConstruirTransiciones {
 
     public void guardarAutomata(ObservableList data){
         Transicion transicion;
+        ArrayList<Transicion> transiciones;
         for (int i=0;i<data.size();i++){
+            transiciones = new ArrayList<>();
             if (data.get(i) instanceof String[]) {
-                String[] transiciones = (String[]) data.get(i);
-                for (int j=1;j<transiciones.length;j++){
-                    String vectorEstados[] = transiciones[j].split(",");
+                String[] t = (String[]) data.get(i);
+                for (int j=1;j<t.length;j++){
+                    String vectorEstados[] = t[j].split(",");
+                    transicion = new Transicion(Automata.getInstance().getSimbolos()[j-1]);
                     for(int k=0;k<vectorEstados.length;k++){
                         int dir=direccionEstado(vectorEstados[k]);
-                        transicion = new Transicion(Automata.getInstance().getSimbolos()[j-1]);
                         transicion.agregarEstadoFinal(Automata.getInstance().getEstados().get(dir));
-                        Automata.getInstance().getEstados().get(i).addTransicion(transicion);
                     }
+                    transiciones.add(transicion);
                 }
+                Automata.getInstance().getEstados().get(i).setTransiciones(transiciones);
             }
         }
         Handler_Automata a = new Handler_Automata();
-        a.imprimirAutomata();
-        a.convertirAutomataAFN();
-        a.imprimirAutomata();
-        a.simplificarAutomata();
-        a.imprimirAutomata();
+        System.out.println(a.reconocerSecuencia("0001110011"));
     }
 
     public int direccionEstado(String valorEstado){
