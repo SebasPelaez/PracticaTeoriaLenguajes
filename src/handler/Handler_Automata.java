@@ -49,7 +49,6 @@ public class Handler_Automata {
 
         }
         return estadoActual.isEsAceptacion();
-
     }
 
     public boolean esDeterministico() {

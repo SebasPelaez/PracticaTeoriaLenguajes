@@ -24,9 +24,9 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception{
         setPrimaryStage(primaryStage); // **Set the Stage**
-        Parent root = FXMLLoader.load(getClass().getClassLoader().getResource("view/ConstruccionEstados_View.fxml"));
+        Parent root = FXMLLoader.load(getClass().getClassLoader().getResource("view/Principal.fxml"));
         primaryStage.setTitle("Peppin World");
-        primaryStage.setScene(new Scene(root, 500, 500));
+        primaryStage.setScene(new Scene(root, 400, 380));
         primaryStage.show();
 
         /*

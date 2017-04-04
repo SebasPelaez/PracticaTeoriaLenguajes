@@ -144,8 +144,6 @@ public class HandlerFile {
         return e;
     }
 
-
-
     public void guardarAutomata(){
         FileChooser fileChooser = new FileChooser();
         file = fileChooser.showSaveDialog(stage);

@@ -17,6 +17,10 @@ public class Automata {
         }
         return instance;
     }
+
+    public void reinicializarAutomata(){
+        instance=null;
+    }
 /*
     public Automata(ArrayList<Estado> estados, String[] simbolos){
         this.estados = estados;

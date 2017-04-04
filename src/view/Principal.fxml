@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.text.*?>
 <?import javafx.scene.image.*?>
 <?import com.jfoenix.controls.*?>
 <?import java.lang.*?>
@@ -9,19 +10,32 @@
 <?import javafx.scene.layout.*?>
 
 
-<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="281.0" prefWidth="373.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="347.0" prefWidth="386.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.Principal">
    <children>
-      <JFXButton fx:id="btnCrearAutomata" layoutX="255.0" layoutY="44.0" text="Crear Automata" />
-      <JFXButton fx:id="btnCargarAutomata" layoutX="251.0" layoutY="185.0" text="Cargar Automata" />
-      <ImageView fitHeight="82.0" fitWidth="344.0" layoutX="14.0" layoutY="15.0" pickOnBounds="true" preserveRatio="true">
+      <Label layoutX="95.0" layoutY="14.0" text="Autómatas">
+         <font>
+            <Font size="41.0" />
+         </font>
+      </Label>
+      <ImageView fitHeight="150.0" fitWidth="200.0" layoutX="14.0" layoutY="93.0" pickOnBounds="true" preserveRatio="true">
          <image>
-            <Image url="@../../../../Desktop/La%20Creacion.jpg" />
+            <Image url="@../images/La%20Creacion.jpg" />
          </image>
       </ImageView>
-      <ImageView fitHeight="145.0" fitWidth="220.0" layoutX="14.0" layoutY="128.0" pickOnBounds="true" preserveRatio="true">
+      <ImageView fitHeight="150.0" fitWidth="200.0" layoutX="14.0" layoutY="200.0" pickOnBounds="true" preserveRatio="true">
          <image>
-            <Image url="@../../../../Desktop/sisifo.jpg" />
+            <Image url="@../images/sisifo.jpg" />
          </image>
       </ImageView>
+      <JFXButton fx:id="btnCrearAutomata" layoutX="235.0" layoutY="111.0" onAction="#crearAutomata" text="Crear Autómata">
+         <font>
+            <Font size="17.0" />
+         </font>
+      </JFXButton>
+      <JFXButton fx:id="btnCargarAutomata" layoutX="230.0" layoutY="244.0" onAction="#cargarAutomata" text="Cargar Autómata">
+         <font>
+            <Font size="17.0" />
+         </font>
+      </JFXButton>
    </children>
-</Pane>
+</AnchorPane>

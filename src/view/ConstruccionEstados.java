@@ -31,8 +31,6 @@ import java.util.ResourceBundle;
 public class ConstruccionEstados implements Initializable {
 
     @FXML
-    private Pane layout;
-    @FXML
     private TableView<Estado> tableView;
     @FXML
     private JFXTextField txtSimbolos;
@@ -52,15 +50,14 @@ public class ConstruccionEstados implements Initializable {
     @FXML
     private void construirTransiciones(ActionEvent evento) throws IOException {
         //paso a la siguiente ventana
-        controller.agregarEstados(tableView.getItems());
+        transiciones(evento);
+/*
         if (!controller.estaVaciaCadena(txtSimbolos.getText()) && controller.validarCadena(txtSimbolos.getText()).equals("")) {
             controller.agregarSimbolos(txtSimbolos.getText());
             controller.imprimirSimbolos();
+            controller.agregarEstados(tableView.getItems());
             transiciones(evento);
-        }
-        /*
-        Node source = (Node) evento.getSource();
-        print(source.getParent());*/
+        }  */
     }
 
     @Override

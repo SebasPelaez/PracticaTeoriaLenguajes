@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.text.*?>
+<?import com.jfoenix.controls.*?>
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+
+<AnchorPane prefHeight="481.0" prefWidth="609.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.InteractividadAutomata">
+   <children>
+      <JFXButton fx:id="btnConvertirDeterministico" disable="true" layoutX="18.0" layoutY="428.0" onAction="#convertirDeterministico" text="Convertir a Deterministico">
+         <font>
+            <Font size="15.0" />
+         </font>
+      </JFXButton>
+      <Label fx:id="lblEsDeterministico" layoutX="22.0" layoutY="320.0" text="¿Es determinístico?">
+         <font>
+            <Font size="15.0" />
+         </font>
+      </Label>
+      <JFXCheckBox fx:id="chkSiDeterministico" disable="true" layoutX="18.0" layoutY="357.0" text="Si">
+         <font>
+            <Font size="15.0" />
+         </font>
+      </JFXCheckBox>
+      <JFXCheckBox fx:id="chkNoDeterministico" disable="true" layoutX="18.0" layoutY="396.0" text="No">
+         <font>
+            <Font size="15.0" />
+         </font>
+      </JFXCheckBox>
+      <JFXButton fx:id="btnSimplificar" layoutX="220.0" layoutY="367.0" onAction="#simplificar" text="Simplificar el Autómata">
+         <font>
+            <Font size="15.0" />
+         </font>
+      </JFXButton>
+      <JFXButton fx:id="btnProbarAutomata" layoutX="220.0" layoutY="428.0" onAction="#probarAutomata" text="Probar el Autómata">
+         <font>
+            <Font size="15.0" />
+         </font>
+      </JFXButton>
+      <JFXTextField fx:id="txtHileraEvaluar" layoutX="369.0" layoutY="429.0" prefHeight="29.0" prefWidth="223.0" promptText="Ingrese hilera a probar">
+         <font>
+            <Font size="15.0" />
+         </font>
+      </JFXTextField>
+      <JFXButton fx:id="btnGuardarEnDisco" layoutX="220.0" layoutY="315.0" onAction="#guardarEnDisco" text="Guardar en Disco">
+         <font>
+            <Font size="15.0" />
+         </font>
+      </JFXButton>
+      <JFXButton fx:id="btnGenerarPdf" layoutX="417.0" layoutY="315.0" onAction="#generarPdf" text="Generar PDF">
+         <font>
+            <Font size="15.0" />
+         </font>
+      </JFXButton>
+      <JFXButton fx:id="btnNuevoAutomata" layoutX="417.0" layoutY="367.0" onAction="#nuevoAutomata" text="Crear Nuevo Autómata">
+         <font>
+            <Font size="15.0" />
+         </font>
+      </JFXButton>
+      <Label layoutX="14.0" layoutY="14.0" text="*Recuerda que puedes modificar los estados del autómata cuando lo desees, solo con dar clic en la transición." />
+      <Pane fx:id="panelTabla" layoutX="14.0" layoutY="31.0" prefHeight="250.0" prefWidth="582.0">
+         <children>
+            <TableView fx:id="tableView" prefHeight="250.0" prefWidth="582.0" />
+         </children>
+      </Pane>
+   </children>
+</AnchorPane>

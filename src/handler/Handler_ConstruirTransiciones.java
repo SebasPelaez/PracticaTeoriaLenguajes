@@ -1,6 +1,5 @@
 package handler;
 
-import com.sun.scenario.effect.impl.sw.sse.SSEBlend_SRC_OUTPeer;
 import javafx.collections.ObservableList;
 import model.Automata;
 import model.Estado;
@@ -26,10 +25,6 @@ public class Handler_ConstruirTransiciones {
                 }
             }
         }
-        Handler_Automata automata = new Handler_Automata();
-        automata.imprimirAutomata();
-        automata.simplificarAutomata();
-        System.out.println("YAAAAAAA");
     }
 
     public int direccionEstado(String valorEstado){
