@@ -18,13 +18,22 @@ public class Handler_ConstruirTransiciones {
             if (data.get(i) instanceof String[]) {
                 String[] transiciones = (String[]) data.get(i);
                 for (int j=1;j<transiciones.length;j++){
-                    int dir=direccionEstado(transiciones[j]);
-                    transicion = new Transicion(Automata.getInstance().getSimbolos()[j-1]);
-                    transicion.agregarEstadoFinal(Automata.getInstance().getEstados().get(dir));
-                    Automata.getInstance().getEstados().get(i).addTransicion(transicion);
+                    String vectorEstados[] = transiciones[j].split(",");
+                    for(int k=0;k<vectorEstados.length;k++){
+                        int dir=direccionEstado(vectorEstados[k]);
+                        transicion = new Transicion(Automata.getInstance().getSimbolos()[j-1]);
+                        transicion.agregarEstadoFinal(Automata.getInstance().getEstados().get(dir));
+                        Automata.getInstance().getEstados().get(i).addTransicion(transicion);
+                    }
                 }
             }
         }
+        Handler_Automata a = new Handler_Automata();
+        a.imprimirAutomata();
+        a.convertirAutomataAFN();
+        a.imprimirAutomata();
+        a.simplificarAutomata();
+        a.imprimirAutomata();
     }
 
     public int direccionEstado(String valorEstado){

@@ -41,6 +41,10 @@ public class Automata {
         return simbolos;
     }
 
+    public void agregarEstado(Estado e){
+        estados.add(e);
+    }
+
     public void setSimbolos(String[] simbolos) {
         this.simbolos = simbolos;
     }

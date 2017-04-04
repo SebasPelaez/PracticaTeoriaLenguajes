@@ -39,4 +39,5 @@ public class Transicion {
         return estadosFinales.size();
     }
 
+
 }

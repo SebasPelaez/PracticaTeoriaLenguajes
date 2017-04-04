@@ -23,18 +23,23 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception{
+
         setPrimaryStage(primaryStage); // **Set the Stage**
         Parent root = FXMLLoader.load(getClass().getClassLoader().getResource("view/Principal.fxml"));
         primaryStage.setTitle("Peppin World");
         primaryStage.setScene(new Scene(root, 400, 380));
         primaryStage.show();
 
-        /*
+/*
         Handler_Automata automata = new Handler_Automata();
         HandlerFile hf = new HandlerFile(primaryStage);
         hf.crearAutomata();
+        automata.imprimirAutomata();
+        automata.convertirAutomataAFN();
+        automata.imprimirAutomata();
         automata.simplificarAutomata();
-        */
+        automata.imprimirAutomata();*/
+
 
     }
 

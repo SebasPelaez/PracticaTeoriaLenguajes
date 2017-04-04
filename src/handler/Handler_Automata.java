@@ -25,6 +25,7 @@ public class Handler_Automata {
     }
 
     public boolean reconocerSecuencia(String s){
+
         Estado estadoActual = obtenerEstadoInicial();
         if(s.isEmpty() && estadoActual.isEsAceptacion()){
             return true;
@@ -52,7 +53,7 @@ public class Handler_Automata {
     }
 
     public boolean esDeterministico() {
-        int cont = 1;
+        int cont = 0;
         for (int i = 0; i < automata.getEstados().size(); i++) {
             if (automata.getEstados().get(i).isEsInicial()) {
                 cont++;
@@ -288,5 +289,84 @@ public class Handler_Automata {
             }
             System.out.println();
         }
+    }
+
+    public Estado obtenerEstadosDeString(String s){
+        for (int i = 0; i < automata.getEstados().size(); i++) {
+            if(automata.getEstados().get(i).getNombre().equals(s)){
+                return automata.getEstados().get(i);
+            }
+        }
+        return null;
+    }
+
+    public void convertirAutomataAFN(){
+        if(!esDeterministico()){
+            String nuevoEstado="";
+            int i =0;
+            while(i < automata.getEstados().size()){
+                Estado e = automata.getEstados().get(i);
+                ArrayList<Transicion> t = e.getTransiciones();
+                if(t.isEmpty()){
+                    setTransicionEstadoNuevo(e);
+                    t = e.getTransiciones();
+                }
+                    int j=0;
+                    while (j< t.size()){
+                        if(t.get(j).getEstadosFinales().size()>=2){
+                            int k=0;
+                            Estado e2;
+                            while(k< t.get(j).getEstadosFinales().size()){
+                                nuevoEstado += t.get(j).getEstadosFinales().get(k).getNombre()+"-";
+                                k++;
+                            }
+                            nuevoEstado = validarQueNoEsteString(nuevoEstado);
+                            nuevoEstado = nuevoEstado.substring(0,nuevoEstado.length()-1);
+                            e2= new Estado(nuevoEstado);
+                            t.get(j).getEstadosFinales().clear();
+                            t.get(j).agregarEstadoFinal(e2);
+                            if(!buscarEstado(e2.getNombre(),automata.getEstados())) {
+                                automata.agregarEstado(e2);
+                            }
+                            nuevoEstado="";
+                        }
+
+                        j++;
+                    }
+
+                i++;
+            }
+        }
+    }
+
+    public void setTransicionEstadoNuevo(Estado e){
+        String[] nombre = e.getNombre().split("-");
+        ArrayList<Estado> estadosAgregar;
+        ArrayList<Transicion> transicion=new ArrayList<>();
+        for (int j = 0; j < automata.getSimbolos().length; j++) {
+            Transicion t =new Transicion(automata.getSimbolos()[j]);
+            estadosAgregar = new ArrayList<>();
+            for (int i = 0; i < nombre.length; i++) {
+                Estado e2 = obtenerEstadosDeString(nombre[i]);
+                Estado e3 = e2.getTransiciones().get(j).getEstadosFinales().get(0);
+                if(!estadosAgregar.contains(e3)){
+                    estadosAgregar.add(e3);
+                }
+            }
+            t.setEstadosFinales(estadosAgregar);
+            transicion.add(t);
+        }
+        e.setTransiciones(transicion);
+    }
+
+    public String validarQueNoEsteString(String a){
+        String b[] = a.split("-");
+        String retornoVerdadero="";
+        for (String i: b){
+            if(!retornoVerdadero.contains(i)){
+                retornoVerdadero+=i+"-";
+            }
+        }
+        return retornoVerdadero;
     }
 }
