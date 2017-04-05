@@ -17,20 +17,8 @@ public class Handler_ConstruirEstados {
     }
 
     public void agregarSimbolos(String cadena){
-        int tamañoVector = (cadena.length()/2)+(cadena.length()%2);
-        int i=0;
-        String simbolos[]= new String[tamañoVector];
-        StringTokenizer token = new StringTokenizer(cadena,",");
-        while (token.hasMoreTokens()){
-            simbolos[i++]=token.nextToken();
-        }
+        String simbolos[]= cadena.split(",");
         automata.setSimbolos(simbolos);
-    }
-
-    public String validarCadena(String cadena){
-        if (cadena.charAt(0)==',')return "La cadena de símbolos no debe empezar con comas(,)";
-        if(cadena.charAt(cadena.length()-1)==',')return "La cadena de símbolos no debe empezar con comas(,)";
-        return "";
     }
 
     public boolean estaVaciaCadena(String cadena){
@@ -50,13 +38,6 @@ public class Handler_ConstruirEstados {
             estados.add(e);
         }
         automata.setEstados(estados);
-        for (int i=0;i<automata.getEstados().size();i++){
-            System.out.println("Nombre ("+i+"): " + automata.getEstados().get(i).getNombre());
-            System.out.println("Inicial("+i+"): " + automata.getEstados().get(i).is_inicial());
-            System.out.println("Aceptación?("+i+"): " + automata.getEstados().get(i).is_Aceptacion());
-            System.out.println("Error?("+i+"): " + automata.getEstados().get(i).is_error());
-        }
-
     }
 
     public boolean existenEstados(ObservableList<Estado> estados){
@@ -67,6 +48,47 @@ public class Handler_ConstruirEstados {
         for (int i=0;i<automata.getSimbolos().length;i++){
             System.out.println("Simbolo: " + automata.getSimbolos()[i]);
         }
+    }
+
+    public boolean nombresDeEstadosCorrectos(ObservableList<Estado> estados){
+        for(Estado e: estados){
+            if(e.getNombre().equals("Ingrese el estado aquí")){
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public boolean existeAceptacion(ObservableList<Estado> estados){
+        int cont=0;
+        for(Estado e: estados){
+            if(e.isEsAceptacion() || e.is_Aceptacion()){
+                cont++;
+            }
+        }
+        return cont!=0;
+    }
+
+    public boolean existeInicial(ObservableList<Estado> estados){
+        int cont=0;
+        for(Estado e: estados){
+            if(e.isEsInicial() || e.is_inicial()){
+                cont++;
+            }
+        }
+        return cont!=0;
+    }
+
+    public boolean simbolosDiferentesDeEstados(ObservableList<Estado> estados,String cadenaSimbolos){
+        String simbolos[] = cadenaSimbolos.split(",");
+        for (String s: simbolos){
+            for (Estado e: estados){
+                if (e.getNombre().equals(s)){
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 
 }

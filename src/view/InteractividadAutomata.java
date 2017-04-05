@@ -5,6 +5,9 @@ import com.jfoenix.controls.JFXCheckBox;
 import com.jfoenix.controls.JFXTextField;
 import handler.HandlerFile;
 import handler.Handler_Automata;
+import javafx.beans.property.ReadOnlyStringWrapper;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -13,12 +16,17 @@ import javafx.print.PrinterJob;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.stage.Stage;
 import model.Automata;
+import model.Estado;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.ResourceBundle;
 
 /**
@@ -33,6 +41,9 @@ public class InteractividadAutomata implements Initializable {
     @FXML private JFXButton btnConvertirDeterministico;
 
     private Handler_Automata controlador;
+    private int simbolosEntrada;
+    private List<String[]> jdata;
+    private ObservableList<String[]> datos;
 
     @FXML private void convertirDeterministico(ActionEvent evento){
         controlador.convertirAutomataAFN();
@@ -70,12 +81,18 @@ public class InteractividadAutomata implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         controlador = new Handler_Automata();
+        datos = FXCollections.observableArrayList();
+        jdata = new LinkedList<>(); //Here is the data
+        simbolosEntrada = 0;
         validarDeterministico();
+        inicializarColumnas();
+        agregarFilas();
+        tableView.getItems().addAll(datos);
+        tableView.setEditable(true);
     }
 
     private void validarDeterministico() {
-        //controlador.esDeterministico() VA EN EL IF
-        if(true){
+        if(controlador.esDeterministico()){
             chkSiDeterministico.setSelected(true);
         }else{
             chkNoDeterministico.setSelected(false);
@@ -104,5 +121,55 @@ public class InteractividadAutomata implements Initializable {
         app_stage.hide();
         app_stage.setScene(home_scene);
         app_stage.show();
+    }
+
+    public void inicializarColumnas(){
+        for (int i=0;i<=Automata.getInstance().getSimbolos().length;i++){
+            TableColumn<String[], String> columna;
+            int j = i;
+            if(i==0){
+                columna  = new TableColumn<>("Estado/Símbolo");
+                columna.setPrefWidth(120);
+            }else{
+                columna = new TableColumn<>(Automata.getInstance().getSimbolos()[i-1]);
+                columna.setCellFactory(TextFieldTableCell.forTableColumn());
+                columna.setPrefWidth(70);
+            }
+            columna.setCellValueFactory(cellData -> {
+                String[] rowData = cellData.getValue();
+                if (j >= rowData.length) {
+                    return new ReadOnlyStringWrapper("");
+                } else {
+                    String cellValue = rowData[j];
+                    return new ReadOnlyStringWrapper(cellValue);
+                }
+            });
+            columna.setOnEditCommit(event -> {
+                String[] row = event.getRowValue();
+                row[j] = event.getNewValue();
+            });
+            tableView.getColumns().addAll(columna);
+            simbolosEntrada++;
+        }
+    }
+
+    private void agregarFilas() {
+        for (int j=0;j<Automata.getInstance().getEstados().size();j++) {
+            String[] estados = new String[simbolosEntrada];
+            for (int i = 0; i < simbolosEntrada; i++) {
+                Estado e = Automata.getInstance().getEstados().get(j);
+                estados[i]="";
+                if(i==0){
+                    estados[i]=e.getNombre();
+                }else{
+                    for (int k=0;k<e.getTransiciones().get(i-1).getEstadosFinales().size();k++){
+                        estados[i]+=e.getTransiciones().get(i-1).getEstadosFinales().get(k).getNombre()+",";
+                    }
+                    estados[i] = estados[i].substring(0,estados[i].length()-1);
+                }
+            }
+            jdata.add(estados);
+        }
+        datos = FXCollections.observableList(jdata);
     }
 }

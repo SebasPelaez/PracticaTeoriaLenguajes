@@ -1,6 +1,5 @@
 package view;
 
-import Main.Main;
 import com.jfoenix.controls.*;
 import handler.Handler_ConstruirEstados;
 import javafx.fxml.FXML;
@@ -14,11 +13,10 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.Pane;
 import javafx.event.ActionEvent;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
-import javafx.stage.Window;
 import model.Estado;
 
 import java.io.IOException;
@@ -49,13 +47,25 @@ public class ConstruccionEstados implements Initializable {
 
     @FXML
     private void construirTransiciones(ActionEvent evento) throws IOException {
-        //paso a la siguiente ventana
-
-        if (!controller.estaVaciaCadena(txtSimbolos.getText()) && controller.validarCadena(txtSimbolos.getText()).equals("")) {
-            controller.agregarSimbolos(txtSimbolos.getText());
-            controller.imprimirSimbolos();
-            controller.agregarEstados(tableView.getItems());
-            transiciones(evento);
+        if (controller.existenEstados(tableView.getItems()) && controller.nombresDeEstadosCorrectos(tableView.getItems())) {
+            if (controller.existeAceptacion(tableView.getItems()) && controller.existeInicial(tableView.getItems())) {
+                if (!controller.estaVaciaCadena(txtSimbolos.getText())) {
+                    if(controller.simbolosDiferentesDeEstados(tableView.getItems(),txtSimbolos.getText())){
+                        controller.agregarSimbolos(txtSimbolos.getText());
+                        controller.imprimirSimbolos();
+                        controller.agregarEstados(tableView.getItems());
+                        transiciones(evento);
+                    }else{
+                        System.out.println("LOS NOMBRES DE LOS SIMBOLOS NO PUEDEN SER IGUALES A LOS DE LOS ESTADOS");
+                    }
+                } else {
+                    System.out.println("INGRESA CORECTAMENTE LOS SIMBOLOS");
+                }
+            } else {
+                System.out.println("CONFIGURA BIEN LAS PROPIEDADES DE LOS ESTADOS");
+            }
+        } else {
+            System.out.println("NO HAS INGRESADO ESTADOS");
         }
     }
 
@@ -103,7 +113,7 @@ public class ConstruccionEstados implements Initializable {
         app_stage.show();
     }
 
-    private void print(Node node){
+    private void print(Node node) {
         // Create a printer job for the default printer
         PrinterJob job = PrinterJob.createPrinterJob();
         if (job != null) {

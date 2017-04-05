@@ -31,8 +31,6 @@ public class Handler_ConstruirTransiciones {
                 Automata.getInstance().getEstados().get(i).setTransiciones(transiciones);
             }
         }
-        Handler_Automata a = new Handler_Automata();
-        System.out.println(a.reconocerSecuencia("0001110011"));
     }
 
     public int direccionEstado(String valorEstado){
@@ -43,6 +41,24 @@ public class Handler_ConstruirTransiciones {
             }
         }
         return -1;
+    }
+
+    public boolean validarTransicionesCorrectas(ObservableList data){
+        Handler_Automata handler_automata = new Handler_Automata();
+        for (int i=0;i<data.size();i++){
+            if (data.get(i) instanceof String[]) {
+                String[] t = (String[]) data.get(i);
+                for (int j=1;j<t.length;j++) {
+                    String vectorEstados[] = t[j].split(",");
+                    for (String cadena:vectorEstados){
+                        if(!handler_automata.buscarEstado(cadena,Automata.getInstance().getEstados())){
+                            return false;
+                        }
+                    }
+                }
+            }
+        }
+        return true;
     }
 
 }

@@ -1,6 +1,7 @@
 package view;
 
 import com.jfoenix.controls.JFXButton;
+import handler.HandlerFile;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -37,16 +38,19 @@ public class Principal implements Initializable {
 
     private void transiciones(ActionEvent event,int ventana) throws IOException {
         Parent home_parent=null;
+        Stage escena = (Stage) ((Node) event.getSource()).getScene().getWindow();
         switch (ventana){
             case 0:
                 home_parent = FXMLLoader.load(getClass().getClassLoader().getResource("view/ConstruccionEstados_View.fxml"));
                 break;
             case 1:
+                HandlerFile hf = new HandlerFile(escena);
+                hf.crearAutomata();
                 home_parent = FXMLLoader.load(getClass().getClassLoader().getResource("view/Interactividad.fxml"));
                 break;
         }
         Scene home_scene = new Scene(home_parent);
-        Stage app_stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        Stage app_stage = escena;
         app_stage.hide();
         app_stage.setScene(home_scene);
         app_stage.show();

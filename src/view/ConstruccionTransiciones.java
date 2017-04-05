@@ -11,8 +11,11 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.TextFieldTableCell;
@@ -21,6 +24,7 @@ import javafx.util.Callback;
 import model.Automata;
 import model.Estado;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -40,8 +44,13 @@ public class ConstruccionTransiciones implements Initializable {
     private Handler_ConstruirTransiciones controller;
     private List<String[]> jdata;
 
-    @FXML private void guardarAutomata(ActionEvent evento){
-        controller.guardarAutomata(tableView.getItems());
+    @FXML private void guardarAutomata(ActionEvent evento) throws IOException {
+        if(controller.validarTransicionesCorrectas(tableView.getItems())){
+            controller.guardarAutomata(tableView.getItems());
+            transiciones(evento);
+        }else{
+            System.out.println("LAS TRANSICIONES DEBEN SER A ESTADOS");
+        }
 
     }
 
@@ -101,4 +110,14 @@ public class ConstruccionTransiciones implements Initializable {
             simbolosEntrada++;
         }
     }
+
+    private void transiciones(ActionEvent event) throws IOException {
+        Parent home_parent = FXMLLoader.load(getClass().getClassLoader().getResource("view/Interactividad.fxml"));
+        Scene home_scene = new Scene(home_parent);
+        Stage app_stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        app_stage.hide();
+        app_stage.setScene(home_scene);
+        app_stage.show();
+    }
+
 }
