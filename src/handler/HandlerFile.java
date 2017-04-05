@@ -46,6 +46,7 @@ public class HandlerFile {
             fr = new FileReader(file);
             br = new BufferedReader(fr);
             linea = br.readLine();
+            linea= quitarEspacios(linea);
             while(linea!= null) {
                 switch (i) {
                     case 1:
@@ -64,18 +65,21 @@ public class HandlerFile {
                         splitInicial = parte1.split("-");
                         splitFinal = parte2.split(",");
                         e = obtenerEstado(splitInicial[0]);
-                        t = crearTransiciones(splitFinal,splitInicial[1]);
-                        if(e!= null){
+                        if(e!= null && existeSimboloEntrada(splitInicial[1])){
+                            t = crearTransiciones(splitFinal,splitInicial[1]);
                             e.addTransicion(t);
                         }else{
-                            System.out.println("ese estado no existe");
+                            System.out.println("Estado o simbolo en la linea "+linea+" no existe");
                         }
-
                 }
                 linea = br.readLine();
+                if(linea != null){
+                    linea= quitarEspacios(linea);
+                }
+
             }
         } catch (Exception ex) {
-            System.out.println("No existe el archivo");;
+            System.out.println(ex);;
         }finally {
             try {
                 br.close();
@@ -86,6 +90,27 @@ public class HandlerFile {
         Automata.getInstance().setEstados(estadosObjecto);
         Automata.getInstance().setSimbolos(simbolos);
     }
+
+    private String quitarEspacios(String s){
+        String nuevoString="";
+            for (int i = 0; i < s.length(); i++) {
+                if(s.charAt(i)!=' '){
+                    nuevoString += s.charAt(i);
+                }
+            }
+        return nuevoString;
+    }
+
+    private boolean existeSimboloEntrada(String a){
+        for (int i = 0; i < simbolos.length; i++) {
+            if(simbolos[i].equals(a)){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private void validarEstados(String a){}
 
     private ArrayList<Estado> CrearEstados(String[] s){
         ArrayList<Estado> a = new ArrayList<>();

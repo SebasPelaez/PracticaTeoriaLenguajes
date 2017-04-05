@@ -39,7 +39,7 @@ public class InteractividadAutomata implements Initializable {
     @FXML private JFXCheckBox chkNoDeterministico;
     @FXML private JFXTextField txtHileraEvaluar;
     @FXML private JFXButton btnConvertirDeterministico;
-
+    @FXML private JFXButton btnGenerarPdf;
     private Handler_Automata controlador;
     private int simbolosEntrada;
     private List<String[]> jdata;
@@ -70,7 +70,8 @@ public class InteractividadAutomata implements Initializable {
 
     @FXML private void generarPdf(ActionEvent evento){
         Node source = (Node) evento.getSource();
-        print(source.getParent());
+        Parent a = source.getParent();
+        print(a);
     }
 
     @FXML private void nuevoAutomata(ActionEvent evento) throws IOException {
@@ -95,13 +96,13 @@ public class InteractividadAutomata implements Initializable {
         if(controlador.esDeterministico()){
             chkSiDeterministico.setSelected(true);
         }else{
-            chkNoDeterministico.setSelected(false);
-            btnConvertirDeterministico.setDisable(true);
+            chkNoDeterministico.setSelected(true);
+            btnConvertirDeterministico.setDisable(false);
         }
 
     }
 
-    private void print(Node node){
+    private void print(final Node node){
         // Create a printer job for the default printer
         PrinterJob job = PrinterJob.createPrinterJob();
         if (job != null) {

@@ -3,8 +3,8 @@ package handler;
 import javafx.collections.ObservableList;
 import model.Automata;
 import model.Estado;
+
 import java.util.ArrayList;
-import java.util.StringTokenizer;
 
 /**
  * Created by Sebas on 1/04/2017.
@@ -17,8 +17,28 @@ public class Handler_ConstruirEstados {
     }
 
     public void agregarSimbolos(String cadena){
-        String simbolos[]= cadena.split(",");
+        String[] simbolos = cadena.split(",");
         automata.setSimbolos(simbolos);
+    }
+
+    public boolean cadenaValida(String cadena){
+        if (cadena.charAt(0)==',' || cadena.charAt(cadena.length()-1)==','){
+            return false;
+        }
+        return true;
+    }
+
+    public boolean simbolosRepetidos(String cadena){
+        String apariciones="";
+        String[] vector = cadena.split(",");
+        for (int i = 0; i < vector.length; i++) {
+            if(apariciones.contains(vector[i])){
+                return true;
+            }else{
+                apariciones += vector[i];
+            }
+        }
+        return false;
     }
 
     public boolean estaVaciaCadena(String cadena){
@@ -89,6 +109,62 @@ public class Handler_ConstruirEstados {
             }
         }
         return true;
+    }
+
+    public boolean estadosRepetidos(ObservableList<Estado> estados){
+        String apariciones="";
+        for (Estado e: estados){
+            if (apariciones.contains(e.getNombre())){
+                return true;
+            }else{
+                apariciones += e.getNombre();
+            }
+        }
+        return false;
+    }
+
+    public ArrayList<String> validarAutomata(ObservableList<Estado> estados,String cadenaSimbolos){
+        ArrayList<String> valido = new ArrayList<>();
+        if(estaVaciaCadena(cadenaSimbolos)){
+            valido.add("Debe haber por lo menos 1 símbolo de entrada.");
+            return valido;
+        }else{
+            if(!cadenaValida(cadenaSimbolos)){
+                valido.add("La cadena de símbolos no puede empezar o terminar con comas(,).");
+            }
+
+            if(simbolosRepetidos(cadenaSimbolos)){
+                valido.add("Hay símbolos de entrada repetidos.");
+            }
+        }
+
+        if(!existenEstados(estados)){
+            valido.add("Debe haber por lo menos 1 estado.");
+            return valido;
+        }else{
+            if(!existeInicial(estados)){
+                valido.add("Debe haber por lo menos 1 estado inicial.");
+            }
+            if(!existeAceptacion(estados)){
+                valido.add("Debe haber por lo menos 1 estado de aceptación.");
+            }
+
+            if(!nombresDeEstadosCorrectos(estados)){
+                valido.add("El nombre de algunos estados está sin asignar.");
+            }
+
+            if(estadosRepetidos(estados)){
+                valido.add("Hay estados con el mismo nombre.");
+            }
+
+        }
+        if(!simbolosDiferentesDeEstados(estados,cadenaSimbolos)){
+            valido.add("Los nombres de los estados deben ser diferentes a los símbolos de entrada.");
+        }
+
+
+
+        return valido;
     }
 
 }

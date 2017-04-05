@@ -1,7 +1,9 @@
 package view;
 
-import com.jfoenix.controls.*;
+import com.jfoenix.controls.JFXButton;
+import com.jfoenix.controls.JFXTextField;
 import handler.Handler_ConstruirEstados;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -9,18 +11,22 @@ import javafx.print.PrinterJob;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Label;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
-import javafx.event.ActionEvent;
-import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.Region;
 import javafx.stage.Stage;
 import model.Estado;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
 
 /**
@@ -28,6 +34,8 @@ import java.util.ResourceBundle;
  */
 public class ConstruccionEstados implements Initializable {
 
+    @FXML
+    private Pane layout;
     @FXML
     private TableView<Estado> tableView;
     @FXML
@@ -37,7 +45,11 @@ public class ConstruccionEstados implements Initializable {
     @FXML
     private JFXButton btnTransiciones;
 
+    private String simboloAnt = "";
+
     private Handler_ConstruirEstados controller;
+
+    private Alert alerta = new Alert(Alert.AlertType.WARNING);
 
     @FXML
     private void agregarEstado(ActionEvent evento) {
@@ -45,28 +57,38 @@ public class ConstruccionEstados implements Initializable {
         tableView.getItems().addAll(p1);
     }
 
+    @FXML public void validarCaracter(KeyEvent e){
+        if(e.getCharacter().equals(",") && simboloAnt.equals(",") || e.getCharacter().equals(" ")){
+            e.consume();
+        }else{
+            simboloAnt = e.getCharacter();
+        }
+    }
+
     @FXML
     private void construirTransiciones(ActionEvent evento) throws IOException {
-        if (controller.existenEstados(tableView.getItems()) && controller.nombresDeEstadosCorrectos(tableView.getItems())) {
-            if (controller.existeAceptacion(tableView.getItems()) && controller.existeInicial(tableView.getItems())) {
-                if (!controller.estaVaciaCadena(txtSimbolos.getText())) {
-                    if(controller.simbolosDiferentesDeEstados(tableView.getItems(),txtSimbolos.getText())){
-                        controller.agregarSimbolos(txtSimbolos.getText());
-                        controller.imprimirSimbolos();
-                        controller.agregarEstados(tableView.getItems());
-                        transiciones(evento);
-                    }else{
-                        System.out.println("LOS NOMBRES DE LOS SIMBOLOS NO PUEDEN SER IGUALES A LOS DE LOS ESTADOS");
-                    }
-                } else {
-                    System.out.println("INGRESA CORECTAMENTE LOS SIMBOLOS");
-                }
-            } else {
-                System.out.println("CONFIGURA BIEN LAS PROPIEDADES DE LOS ESTADOS");
+        //paso a la siguiente ventana
+        controller.agregarEstados(tableView.getItems());
+        ArrayList<String> s = controller.validarAutomata(tableView.getItems(),txtSimbolos.getText());
+        if (s.isEmpty()){
+            controller.agregarSimbolos(txtSimbolos.getText());
+            controller.imprimirSimbolos();
+            transiciones(evento);
+        }else{
+            alerta.setTitle("Alerta");
+            alerta.getDialogPane().getChildren().stream().filter(node -> node instanceof Label).forEach(node -> ((Label)node).setMinHeight(Region.USE_PREF_SIZE));
+            String cadenaAlerta="";
+            for (int i = 0; i < s.size(); i++) {
+                cadenaAlerta += s.get(i)+"\n";
             }
-        } else {
-            System.out.println("NO HAS INGRESADO ESTADOS");
+            System.out.println(cadenaAlerta);
+            alerta.setContentText(cadenaAlerta);
+
+            alerta.showAndWait();
         }
+        /*
+        Node source = (Node) evento.getSource();
+        print(source.getParent());*/
     }
 
     @Override
@@ -113,7 +135,7 @@ public class ConstruccionEstados implements Initializable {
         app_stage.show();
     }
 
-    private void print(Node node) {
+    private void print(Node node){
         // Create a printer job for the default printer
         PrinterJob job = PrinterJob.createPrinterJob();
         if (job != null) {
