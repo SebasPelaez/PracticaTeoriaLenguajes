@@ -317,8 +317,22 @@ public class Handler_Automata {
         return null;
     }
 
+    private int masDeUnEstadoInicial(){
+        int cont =0;
+        for (int i = 0; i < automata.getEstados().size(); i++) {
+            Estado e = automata.getEstados().get(i);
+            if(e.isEsInicial()){
+                cont ++;
+            }
+        }
+        return cont;
+    }
+
     public void convertirAutomataAFN(){
         if(!esDeterministico()){
+            if(masDeUnEstadoInicial()>=2){
+                setEstadosIniciales();
+            }
             String nuevoEstado="";
             int i =0;
             while(i < automata.getEstados().size()){
@@ -356,7 +370,23 @@ public class Handler_Automata {
         }
     }
 
-    public void setTransicionEstadoNuevo(Estado e){
+    private void setEstadosIniciales(){
+        String estadosIniciales="";
+        for (int i = 0; i < automata.getEstados().size(); i++) {
+            Estado e = automata.getEstados().get(i);
+            if(e.isEsInicial()){
+                estadosIniciales += e.getNombre()+"-";
+                e.setEsInicial(false);
+                e.set_inicial(false);
+            }
+        }
+        estadosIniciales = estadosIniciales.substring(0,estadosIniciales.length()-1);
+        Estado estadoNuevo = new Estado(estadosIniciales);
+        estadoNuevo.set_inicial(true);
+        automata.agregarEstado(estadoNuevo);
+    }
+
+    private void setTransicionEstadoNuevo(Estado e){
         boolean aceptacion = false;
         String[] nombre = e.getNombre().split("-");
         ArrayList<Estado> estadosAgregar;
@@ -380,12 +410,14 @@ public class Handler_Automata {
         e.setTransiciones(transicion);
     }
 
+
+
     public String validarQueNoEsteString(String a){
         String b[] = a.split("-");
         String retornoVerdadero="";
         for (String i: b){
             if(!retornoVerdadero.contains(i)){
-                retornoVerdadero+=i+"-";
+                retornoVerdadero +=i+"-";
             }
         }
         return retornoVerdadero;
