@@ -5,6 +5,8 @@ import model.Estado;
 import model.Transicion;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 /**
  * Created by Sebas on 1/04/2017.
@@ -300,8 +302,9 @@ public class Handler_Automata {
             String e = estado.getNombre();
             System.out.print(e);
             for (Transicion transicion:estado.getTransiciones()){
-                System.out.print("\t"+transicion.getEstadosFinales().get(0).getNombre());
-
+                for(Estado eTrans:transicion.getEstadosFinales()){
+                    System.out.print("\t"+eTrans.getNombre());
+                }
             }
             System.out.println("\t"+estado.isEsAceptacion());
 
@@ -421,5 +424,18 @@ public class Handler_Automata {
             }
         }
         return retornoVerdadero;
+    }
+
+    public void sortEstadoInicial(){
+        for (int i=0;i<automata.getEstados().size();i++){
+            for(int j=i+1;j<automata.getEstados().size();j++){
+                Estado aux;
+                if(!automata.getEstados().get(i).is_inicial() && automata.getEstados().get(j).is_inicial()){
+                    aux=automata.getEstados().get(i);
+                    automata.getEstados().set(i,automata.getEstados().get(j));
+                    automata.getEstados().set(j,aux);
+                }
+            }
+        }
     }
 }

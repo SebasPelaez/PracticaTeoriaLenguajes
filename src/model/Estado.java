@@ -57,6 +57,7 @@ public class Estado{
 
     public void setEsAceptacion(boolean esAceptacion) {
         this.esAceptacion=esAceptacion;
+        this.set_aceptacion(esAceptacion);
     }
 
     public boolean isEsError() {
@@ -65,6 +66,7 @@ public class Estado{
 
     public void setEsError(boolean esError) {
         this.esError = esError;
+        this.set_error(esError);
     }
 
     public boolean isEsInicial() {
@@ -73,6 +75,7 @@ public class Estado{
 
     public void setEsInicial(boolean esInicial) {
         this.esInicial = esInicial;
+        this.set_inicial(esInicial);
     }
 
     public ArrayList<Transicion> getTransiciones() {
@@ -96,6 +99,7 @@ public class Estado{
 
     public void set_aceptacion(boolean _aceptacion) {
         this._aceptacion.set(_aceptacion);
+        this.esAceptacion=_aceptacion;
     }
     public final BooleanProperty aceptacionProperty(){
         return this._aceptacion;
@@ -107,6 +111,7 @@ public class Estado{
 
     public void set_error(boolean _error) {
         this._error.set(_error);
+        this.esError=_error;
     }
     public final BooleanProperty errorProperty(){
         return this._error;
@@ -117,6 +122,7 @@ public class Estado{
     }
     public void set_inicial(boolean _inicial) {
         this._inicial.set(_inicial);
+        this.esInicial=_inicial;
     }
     public final BooleanProperty inicialProperty(){
         return this._inicial;

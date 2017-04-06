@@ -12,6 +12,8 @@ import java.util.ArrayList;
  */
 public class Handler_ConstruirTransiciones {
 
+    private Handler_Automata controllerAutomata = new Handler_Automata();
+
     public void guardarAutomata(ObservableList data){
         Transicion transicion;
         ArrayList<Transicion> transiciones;
@@ -59,6 +61,12 @@ public class Handler_ConstruirTransiciones {
             }
         }
         return true;
+    }
+
+    public void vaciarTransiciones(){
+        for (Estado e: Automata.getInstance().getEstados()){
+            e.getTransiciones().clear();
+        }
     }
 
 }

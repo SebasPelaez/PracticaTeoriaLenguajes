@@ -68,9 +68,9 @@ public class ConstruccionEstados implements Initializable {
     @FXML
     private void construirTransiciones(ActionEvent evento) throws IOException {
         //paso a la siguiente ventana
-        controller.agregarEstados(tableView.getItems());
         ArrayList<String> s = controller.validarAutomata(tableView.getItems(),txtSimbolos.getText());
         if (s.isEmpty()){
+            controller.agregarEstados(tableView.getItems());
             controller.agregarSimbolos(txtSimbolos.getText());
             controller.imprimirSimbolos();
             transiciones(evento);
@@ -83,7 +83,6 @@ public class ConstruccionEstados implements Initializable {
             }
             System.out.println(cadenaAlerta);
             alerta.setContentText(cadenaAlerta);
-
             alerta.showAndWait();
         }
         /*
