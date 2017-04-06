@@ -58,6 +58,8 @@ public class Handler_ConstruirEstados {
             estados.add(e);
         }
         automata.setEstados(estados);
+        Handler_Automata handler_automata = new Handler_Automata();
+        handler_automata.sortEstadoInicial();
     }
 
     public boolean existenEstados(ObservableList<Estado> estados){

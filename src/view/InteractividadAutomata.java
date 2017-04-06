@@ -5,6 +5,7 @@ import com.jfoenix.controls.JFXCheckBox;
 import com.jfoenix.controls.JFXTextField;
 import handler.HandlerFile;
 import handler.Handler_Automata;
+import handler.Handler_ConstruirTransiciones;
 import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -16,9 +17,13 @@ import javafx.print.PrinterJob;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.TextFieldTableCell;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.Region;
 import javafx.stage.Stage;
 import model.Automata;
 import model.Estado;
@@ -34,76 +39,96 @@ import java.util.ResourceBundle;
  */
 public class InteractividadAutomata implements Initializable {
 
-    @FXML private TableView<String[]> tableView;
-    @FXML private JFXCheckBox chkSiDeterministico;
-    @FXML private JFXCheckBox chkNoDeterministico;
-    @FXML private JFXTextField txtHileraEvaluar;
-    @FXML private JFXButton btnConvertirDeterministico;
-    @FXML private JFXButton btnGenerarPdf;
+    @FXML
+    private TableView<String[]> tableView;
+    @FXML
+    private JFXCheckBox chkSiDeterministico;
+    @FXML
+    private JFXCheckBox chkNoDeterministico;
+    @FXML
+    private JFXTextField txtHileraEvaluar;
+    @FXML
+    private JFXButton btnConvertirDeterministico;
+
     private Handler_Automata controlador;
     private int simbolosEntrada;
     private List<String[]> jdata;
     private ObservableList<String[]> datos;
+    private Handler_ConstruirTransiciones controllerTransiciones;
+    private Alert alerta;
 
-    @FXML private void convertirDeterministico(ActionEvent evento){
+    @FXML
+    private void convertirDeterministico(ActionEvent evento) {
         controlador.convertirAutomataAFN();
         controlador.simplificarAutomata();
         controlador.imprimirAutomata();
+        recargarTabla();
     }
 
-    @FXML private void guardarEnDisco(ActionEvent evento){
+    @FXML
+    private void guardarEnDisco(ActionEvent evento) {
         HandlerFile handlerFile = new HandlerFile((Stage) ((Node) evento.getSource()).getScene().getWindow());
         handlerFile.guardarAutomata();
     }
 
-    @FXML private void simplificar(ActionEvent evento){
+    @FXML
+    private void simplificar(ActionEvent evento) {
         controlador.imprimirAutomata();
         controlador.simplificarAutomata();
+        recargarTabla();
     }
 
-    @FXML private void probarAutomata(ActionEvent evento){
-        if (!txtHileraEvaluar.getText().equals("")){
+    @FXML
+    private void probarAutomata(ActionEvent evento) {
+        if (!txtHileraEvaluar.getText().equals("")) {
             controlador.reconocerSecuencia(txtHileraEvaluar.getText());
-        }else{
+        } else {
             System.out.println("Debes ingresar una cadena para probar el automata");
         }
     }
 
-    @FXML private void generarPdf(ActionEvent evento){
+    @FXML
+    private void generarPdf(ActionEvent evento) {
         Node source = (Node) evento.getSource();
         Parent a = source.getParent();
         print(a);
     }
 
-    @FXML private void nuevoAutomata(ActionEvent evento) throws IOException {
+    @FXML
+    private void nuevoAutomata(ActionEvent evento) throws IOException {
         Automata.getInstance().reinicializarAutomata();
         transiciones(evento);
     }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        alerta = new Alert(Alert.AlertType.WARNING);
+        controllerTransiciones = new Handler_ConstruirTransiciones();
         controlador = new Handler_Automata();
+        controlador.sortEstadoInicial();
         datos = FXCollections.observableArrayList();
         jdata = new LinkedList<>(); //Here is the data
         simbolosEntrada = 0;
         validarDeterministico();
         inicializarColumnas();
-        agregarFilas();
-        tableView.getItems().addAll(datos);
+        recargarTabla();
         tableView.setEditable(true);
     }
 
     private void validarDeterministico() {
-        if(controlador.esDeterministico()){
+        chkSiDeterministico.setSelected(false);
+        chkNoDeterministico.setSelected(false);
+        if (controlador.esDeterministico()) {
             chkSiDeterministico.setSelected(true);
-        }else{
+            btnConvertirDeterministico.setDisable(true);
+        } else {
             chkNoDeterministico.setSelected(true);
             btnConvertirDeterministico.setDisable(false);
         }
 
     }
 
-    private void print(final Node node){
+    private void print(final Node node) {
         // Create a printer job for the default printer
         PrinterJob job = PrinterJob.createPrinterJob();
         if (job != null) {
@@ -125,15 +150,15 @@ public class InteractividadAutomata implements Initializable {
         app_stage.show();
     }
 
-    public void inicializarColumnas(){
-        for (int i=0;i<=Automata.getInstance().getSimbolos().length;i++){
+    public void inicializarColumnas() {
+        for (int i = 0; i <= Automata.getInstance().getSimbolos().length; i++) {
             TableColumn<String[], String> columna;
             int j = i;
-            if(i==0){
-                columna  = new TableColumn<>("Estado/Símbolo");
+            if (i == 0) {
+                columna = new TableColumn<>("Estado/Símbolo");
                 columna.setPrefWidth(120);
-            }else{
-                columna = new TableColumn<>(Automata.getInstance().getSimbolos()[i-1]);
+            } else {
+                columna = new TableColumn<>(Automata.getInstance().getSimbolos()[i - 1]);
                 columna.setCellFactory(TextFieldTableCell.forTableColumn());
                 columna.setPrefWidth(70);
             }
@@ -149,6 +174,8 @@ public class InteractividadAutomata implements Initializable {
             columna.setOnEditCommit(event -> {
                 String[] row = event.getRowValue();
                 row[j] = event.getNewValue();
+                actualizarAutomata();
+                System.out.println("Di enter");
             });
             tableView.getColumns().addAll(columna);
             simbolosEntrada++;
@@ -156,22 +183,45 @@ public class InteractividadAutomata implements Initializable {
     }
 
     private void agregarFilas() {
-        for (int j=0;j<Automata.getInstance().getEstados().size();j++) {
+        for (int j = 0; j < Automata.getInstance().getEstados().size(); j++) {
             String[] estados = new String[simbolosEntrada];
             for (int i = 0; i < simbolosEntrada; i++) {
                 Estado e = Automata.getInstance().getEstados().get(j);
-                estados[i]="";
-                if(i==0){
-                    estados[i]=e.getNombre();
-                }else{
-                    for (int k=0;k<e.getTransiciones().get(i-1).getEstadosFinales().size();k++){
-                        estados[i]+=e.getTransiciones().get(i-1).getEstadosFinales().get(k).getNombre()+",";
+                estados[i] = "";
+                if (i == 0) {
+                    estados[i] = e.getNombre();
+                } else {
+                    for (int k = 0; k < e.getTransiciones().get(i - 1).getEstadosFinales().size(); k++) {
+                        estados[i] += e.getTransiciones().get(i - 1).getEstadosFinales().get(k).getNombre() + ",";
                     }
-                    estados[i] = estados[i].substring(0,estados[i].length()-1);
+                    estados[i] = estados[i].substring(0, estados[i].length() - 1);
                 }
             }
             jdata.add(estados);
         }
         datos = FXCollections.observableList(jdata);
+    }
+
+    public void recargarTabla() {
+        datos.clear();
+        tableView.getItems().clear();
+        agregarFilas();
+        tableView.getItems().addAll(datos);
+    }
+
+    public void actualizarAutomata(){
+        controlador.imprimirAutomata();
+        alerta.setTitle("Alerta");
+        alerta.getDialogPane().getChildren().stream().filter(node -> node instanceof Label).forEach(node -> ((Label)node).setMinHeight(Region.USE_PREF_SIZE));
+        if(controllerTransiciones.validarTransicionesCorrectas(tableView.getItems())){
+            controllerTransiciones.vaciarTransiciones();
+            controllerTransiciones.guardarAutomata(tableView.getItems());
+        }else{
+            alerta.setContentText("LAS TRANSICIONES DEBEN SER A ESTADOS");
+            alerta.showAndWait();
+        }
+        recargarTabla();
+        validarDeterministico();
+        controlador.imprimirAutomata();
     }
 }

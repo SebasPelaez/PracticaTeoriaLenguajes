@@ -16,9 +16,12 @@ import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.TextFieldTableCell;
+import javafx.scene.layout.Region;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 import model.Automata;
@@ -43,13 +46,17 @@ public class ConstruccionTransiciones implements Initializable {
     private ObservableList<String[]> datos;
     private Handler_ConstruirTransiciones controller;
     private List<String[]> jdata;
+    private Alert alerta = new Alert(Alert.AlertType.WARNING);
 
     @FXML private void guardarAutomata(ActionEvent evento) throws IOException {
+        alerta.setTitle("Alerta");
+        alerta.getDialogPane().getChildren().stream().filter(node -> node instanceof Label).forEach(node -> ((Label)node).setMinHeight(Region.USE_PREF_SIZE));
         if(controller.validarTransicionesCorrectas(tableView.getItems())){
             controller.guardarAutomata(tableView.getItems());
             transiciones(evento);
         }else{
-            System.out.println("LAS TRANSICIONES DEBEN SER A ESTADOS");
+            alerta.setContentText("LAS TRANSICIONES DEBEN SER A ESTADOS");
+            alerta.showAndWait();
         }
 
     }
@@ -119,5 +126,6 @@ public class ConstruccionTransiciones implements Initializable {
         app_stage.setScene(home_scene);
         app_stage.show();
     }
+
 
 }
