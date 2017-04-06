@@ -60,7 +60,6 @@ public class InteractividadAutomata implements Initializable {
     @FXML
     private void convertirDeterministico(ActionEvent evento) {
         controlador.convertirAutomataAFN();
-        controlador.simplificarAutomata();
         controlador.imprimirAutomata();
         recargarTabla();
     }
@@ -207,6 +206,7 @@ public class InteractividadAutomata implements Initializable {
         tableView.getItems().clear();
         agregarFilas();
         tableView.getItems().addAll(datos);
+        validarDeterministico();
     }
 
     public void actualizarAutomata(){
@@ -221,7 +221,6 @@ public class InteractividadAutomata implements Initializable {
             alerta.showAndWait();
         }
         recargarTabla();
-        validarDeterministico();
         controlador.imprimirAutomata();
     }
 }

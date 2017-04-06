@@ -80,11 +80,11 @@ public class Handler_Automata {
     }
 
     public void simplificarAutomata(){
-        imprimirAutomata();
         System.out.println("---------");
         ArrayList<Estado> sinEstadosExtraños = quitarEstadosExtranios();
         ArrayList<ArrayList<Estado>> estadosSimplificados = quitarEstadosEquivalentes(sinEstadosExtraños);
         convertirEnNuevosEstados(estadosSimplificados);
+        sortEstadoInicial();
         imprimirAutomata();
     }
 
@@ -389,6 +389,7 @@ public class Handler_Automata {
         Estado estadoNuevo = new Estado(estadosIniciales);
         estadoNuevo.set_inicial(true);
         automata.agregarEstado(estadoNuevo);
+        sortEstadoInicial();
     }
 
     private void setTransicionEstadoNuevo(Estado e){
