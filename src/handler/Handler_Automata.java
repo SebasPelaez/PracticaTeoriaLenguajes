@@ -80,7 +80,7 @@ public class Handler_Automata {
     public void simplificarAutomata(){
         imprimirAutomata();
         System.out.println("---------");
-        ArrayList<Estado> sinEstadosExtraños = quitarEstadosExtraños();
+        ArrayList<Estado> sinEstadosExtraños = quitarEstadosExtranios();
         ArrayList<ArrayList<Estado>> estadosSimplificados = quitarEstadosEquivalentes(sinEstadosExtraños);
         convertirEnNuevosEstados(estadosSimplificados);
         imprimirAutomata();
@@ -90,7 +90,8 @@ public class Handler_Automata {
         ArrayList<Estado> estados = new ArrayList<>();
         Estado nuevo;
         for (int i=0;i<estadosSimplificados.size();i++){
-            nuevo = new Estado("Estado"+(i+1));
+            String nombre = concatenarNombres(estadosSimplificados.get(i));
+            nuevo = new Estado(nombre);
             nuevo.setEsAceptacion(validarAceptacion(estadosSimplificados,i));
             nuevo.setEsInicial(validarInicial(estadosSimplificados,i));
             estados.add(nuevo);
@@ -98,6 +99,20 @@ public class Handler_Automata {
         validarTransiciones(estadosSimplificados,estados);
         Automata.getInstance().setEstados(estados);
     }
+
+    private String concatenarNombres(ArrayList<Estado> estados){
+        String apariciones="";
+        for (int i = 0; i < estados.size(); i++) {
+            String vector[] = estados.get(i).getNombre().split("-");
+            for (int j = 0; j < vector.length; j++) {
+                if(!apariciones.contains(vector[j])){
+                    apariciones += vector[j];
+                }
+            }
+        }
+        return apariciones;
+    }
+
 
     public void validarTransiciones(ArrayList<ArrayList<Estado>> estadosSimplificados,ArrayList<Estado> estados){
         ArrayList<Transicion> transiciones;
@@ -132,7 +147,7 @@ public class Handler_Automata {
         return j<estadosSimplificados.get(i).size();
     }
 
-    private ArrayList<Estado> quitarEstadosExtraños() {
+    private ArrayList<Estado> quitarEstadosExtranios() {
         ArrayList<Estado> estados = new ArrayList<>();
         Estado nuevoEstado = Automata.getInstance().getEstados().get(0);
         estados.add(nuevoEstado);
@@ -286,8 +301,10 @@ public class Handler_Automata {
             System.out.print(e);
             for (Transicion transicion:estado.getTransiciones()){
                 System.out.print("\t"+transicion.getEstadosFinales().get(0).getNombre());
+
             }
-            System.out.println();
+            System.out.println("\t"+estado.isEsAceptacion());
+
         }
     }
 
@@ -310,7 +327,7 @@ public class Handler_Automata {
                 if(t.isEmpty()){
                     setTransicionEstadoNuevo(e);
                     t = e.getTransiciones();
-                }
+                    }
                     int j=0;
                     while (j< t.size()){
                         if(t.get(j).getEstadosFinales().size()>=2){
@@ -340,6 +357,7 @@ public class Handler_Automata {
     }
 
     public void setTransicionEstadoNuevo(Estado e){
+        boolean aceptacion = false;
         String[] nombre = e.getNombre().split("-");
         ArrayList<Estado> estadosAgregar;
         ArrayList<Transicion> transicion=new ArrayList<>();
@@ -347,15 +365,18 @@ public class Handler_Automata {
             Transicion t =new Transicion(automata.getSimbolos()[j]);
             estadosAgregar = new ArrayList<>();
             for (int i = 0; i < nombre.length; i++) {
-                Estado e2 = obtenerEstadosDeString(nombre[i]);
-                Estado e3 = e2.getTransiciones().get(j).getEstadosFinales().get(0);
-                if(!estadosAgregar.contains(e3)){
-                    estadosAgregar.add(e3);
+                Estado e1 = obtenerEstadosDeString(nombre[i]);
+                aceptacion = aceptacion|e1.isEsAceptacion();
+                Estado e2 = e1.getTransiciones().get(j).getEstadosFinales().get(0);
+                if(!estadosAgregar.contains(e2)){
+                    estadosAgregar.add(e2);
                 }
             }
             t.setEstadosFinales(estadosAgregar);
             transicion.add(t);
         }
+        e.setEsAceptacion(aceptacion);
+        e.set_aceptacion(aceptacion);
         e.setTransiciones(transicion);
     }
 

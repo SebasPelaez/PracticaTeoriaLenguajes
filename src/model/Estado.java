@@ -1,6 +1,5 @@
 package model;
 
-import com.jfoenix.controls.datamodels.treetable.RecursiveTreeObject;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 
@@ -39,6 +38,9 @@ public class Estado{
         esAceptacion = false;
         esError = false;
         esInicial = false;
+        this._aceptacion = new SimpleBooleanProperty(false);
+        this._error = new SimpleBooleanProperty(false);
+        this._inicial = new SimpleBooleanProperty(false);
     }
 
     public String getNombre() {

@@ -48,6 +48,7 @@ public class InteractividadAutomata implements Initializable {
     @FXML private void convertirDeterministico(ActionEvent evento){
         controlador.convertirAutomataAFN();
         controlador.simplificarAutomata();
+        controlador.imprimirAutomata();
     }
 
     @FXML private void guardarEnDisco(ActionEvent evento){
