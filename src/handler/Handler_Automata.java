@@ -233,7 +233,7 @@ public class Handler_Automata {
         int j=0;
         if(!validarQueTodosEsten(estadosFinales,nombresEstados)){
             while (!bandera && j<nombresEstados.size()){
-                if(!buscarEstado(nombresEstados.get(j),estadosFinales.get(0))) {
+                if(!buscarEstado(nombresEstados.get(j),estadosFinales.get(d))) {
                     nuevoArray.add(estadosFinales.get(d).get(j));
                     estadosFinales.get(d).remove(estadosFinales.get(d).get(j));
                     x = buscarEnLista(estadosFinales, nombresEstados.get(j));
@@ -248,8 +248,10 @@ public class Handler_Automata {
                     if(buscarEstado(nombresEstados.get(j),estadosFinales.get(x))){
                         nuevoArray.add(estadosFinales.get(d).get(j));
                         estadosFinales.get(d).remove(estadosFinales.get(d).get(j));
+                        nombresEstados.remove(j);
+                    }else{
+                        j++;
                     }
-                    j++;
                 }
             }
         }
