@@ -22,7 +22,6 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.TextFieldTableCell;
-import javafx.scene.layout.Pane;
 import javafx.scene.layout.Region;
 import javafx.stage.Stage;
 import model.Automata;
@@ -79,10 +78,19 @@ public class InteractividadAutomata implements Initializable {
 
     @FXML
     private void probarAutomata(ActionEvent evento) {
+        alerta.setTitle("Alerta");
+        alerta.getDialogPane().getChildren().stream().filter(node -> node instanceof Label).forEach(node -> ((Label)node).setMinHeight(Region.USE_PREF_SIZE));
         if (!txtHileraEvaluar.getText().equals("")) {
-            controlador.reconocerSecuencia(txtHileraEvaluar.getText());
+            if(controlador.reconocerSecuencia(txtHileraEvaluar.getText())){
+                alerta.setContentText("La secuencia es aceptada.");
+                alerta.showAndWait();
+            }else{
+                alerta.setContentText("La secuencia No es aceptada.");
+                alerta.showAndWait();
+            }
         } else {
-            System.out.println("Debes ingresar una cadena para probar el automata");
+            alerta.setContentText("Debes ingresar una cadena para probar el automata");
+            alerta.showAndWait();
         }
     }
 
