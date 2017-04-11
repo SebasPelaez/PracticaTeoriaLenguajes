@@ -1,0 +1,9 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="PracticaTeoriaLenguajes:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/PracticaTeoriaLenguajes_jar</output-path>
+    <root id="archive" name="PracticaTeoriaLenguajes.jar">
+      <element id="module-output" name="PracticaTeoriaLenguajes" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/src/libs/jfoenix.jar" path-in-jar="/" />
+    </root>
+  </artifact>
+</component>
