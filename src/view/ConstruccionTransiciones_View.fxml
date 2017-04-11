@@ -10,6 +10,7 @@
 <AnchorPane prefHeight="365.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.ConstruccionTransiciones">
    <children>
       <TableView fx:id="tableView" layoutX="14.0" layoutY="14.0" prefHeight="261.0" prefWidth="568.0" />
-      <JFXButton fx:id="btnGuardar" layoutX="200.0" layoutY="304.0" onAction="#guardarAutomata" text="Finalizar construcción de autómata" />
+      <JFXButton fx:id="btnGuardar" layoutX="88.0" layoutY="304.0" onAction="#guardarAutomata" text="Finalizar construcción de autómata" />
+      <JFXButton fx:id="btnRegresar" layoutX="408.0" layoutY="304.0" onAction="#regresar" text="Regresar" />
    </children>
 </AnchorPane>

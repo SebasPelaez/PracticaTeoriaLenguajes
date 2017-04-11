@@ -52,13 +52,19 @@ public class ConstruccionTransiciones implements Initializable {
         alerta.setTitle("Alerta");
         alerta.getDialogPane().getChildren().stream().filter(node -> node instanceof Label).forEach(node -> ((Label)node).setMinHeight(Region.USE_PREF_SIZE));
         if(controller.validarTransicionesCorrectas(tableView.getItems())){
-            controller.guardarAutomata(tableView.getItems());
-            transiciones(evento);
+            controller.guardarAutomata(tableView.getItems(),0);
+            transiciones(evento,"Transiciones");
         }else{
             alerta.setContentText("LAS TRANSICIONES DEBEN SER A ESTADOS");
             alerta.showAndWait();
         }
 
+    }
+
+    @FXML
+    private void regresar(ActionEvent evento) throws IOException {
+        Automata.getInstance().reinicializarAutomata();
+        transiciones(evento,"Principal");
     }
 
     @Override
@@ -118,8 +124,16 @@ public class ConstruccionTransiciones implements Initializable {
         }
     }
 
-    private void transiciones(ActionEvent event) throws IOException {
-        Parent home_parent = FXMLLoader.load(getClass().getClassLoader().getResource("view/Interactividad.fxml"));
+    private void transiciones(ActionEvent event,String ventana) throws IOException {
+        Parent home_parent = null;
+        switch (ventana){
+            case "Principal":
+                home_parent = FXMLLoader.load(getClass().getClassLoader().getResource("view/Principal.fxml"));
+                break;
+            case "Transiciones":
+                home_parent = FXMLLoader.load(getClass().getClassLoader().getResource("view/Interactividad.fxml"));
+                break;
+        }
         Scene home_scene = new Scene(home_parent);
         Stage app_stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         app_stage.hide();

@@ -79,12 +79,12 @@ public class InteractividadAutomata implements Initializable {
     @FXML
     private void probarAutomata(ActionEvent evento) {
         alerta.setTitle("Alerta");
-        alerta.getDialogPane().getChildren().stream().filter(node -> node instanceof Label).forEach(node -> ((Label)node).setMinHeight(Region.USE_PREF_SIZE));
+        alerta.getDialogPane().getChildren().stream().filter(node -> node instanceof Label).forEach(node -> ((Label) node).setMinHeight(Region.USE_PREF_SIZE));
         if (!txtHileraEvaluar.getText().equals("")) {
-            if(controlador.reconocerSecuencia(txtHileraEvaluar.getText())){
+            if (controlador.reconocerSecuencia(txtHileraEvaluar.getText())) {
                 alerta.setContentText("La secuencia es aceptada.");
                 alerta.showAndWait();
-            }else{
+            } else {
                 alerta.setContentText("La secuencia No es aceptada.");
                 alerta.showAndWait();
             }
@@ -158,16 +158,27 @@ public class InteractividadAutomata implements Initializable {
     }
 
     public void inicializarColumnas() {
-        for (int i = 0; i <= Automata.getInstance().getSimbolos().length; i++) {
-            TableColumn<String[], String> columna;
+        TableColumn<String[], String> columna = null;
+        for (int i = 0; i <= Automata.getInstance().getSimbolos().length + 2; i++) {
             int j = i;
             if (i == 0) {
                 columna = new TableColumn<>("Estado/Símbolo");
                 columna.setPrefWidth(120);
             } else {
-                columna = new TableColumn<>(Automata.getInstance().getSimbolos()[i - 1]);
-                columna.setCellFactory(TextFieldTableCell.forTableColumn());
-                columna.setPrefWidth(70);
+                if (i == Automata.getInstance().getSimbolos().length + 1) {
+                    columna = new TableColumn<>("Aceptación");
+                    columna.setPrefWidth(80);
+                } else {
+                    if (i == Automata.getInstance().getSimbolos().length + 2) {
+                        columna = new TableColumn<>("Inicial");
+                        columna.setPrefWidth(90);
+                    } else {
+                        columna = new TableColumn<>(Automata.getInstance().getSimbolos()[i - 1]);
+                        columna.setCellFactory(TextFieldTableCell.forTableColumn());
+                        columna.setPrefWidth(70);
+                    }
+                }
+
             }
             columna.setCellValueFactory(cellData -> {
                 String[] rowData = cellData.getValue();
@@ -182,7 +193,6 @@ public class InteractividadAutomata implements Initializable {
                 String[] row = event.getRowValue();
                 row[j] = event.getNewValue();
                 actualizarAutomata();
-                System.out.println("Di enter");
             });
             tableView.getColumns().addAll(columna);
             simbolosEntrada++;
@@ -191,17 +201,27 @@ public class InteractividadAutomata implements Initializable {
 
     private void agregarFilas() {
         for (int j = 0; j < Automata.getInstance().getEstados().size(); j++) {
-            String[] estados = new String[simbolosEntrada];
+            String[] estados = new String[simbolosEntrada + 2];
+            Estado e = Automata.getInstance().getEstados().get(j);
             for (int i = 0; i < simbolosEntrada; i++) {
-                Estado e = Automata.getInstance().getEstados().get(j);
                 estados[i] = "";
                 if (i == 0) {
                     estados[i] = e.getNombre();
                 } else {
-                    for (int k = 0; k < e.getTransiciones().get(i - 1).getEstadosFinales().size(); k++) {
-                        estados[i] += e.getTransiciones().get(i - 1).getEstadosFinales().get(k).getNombre() + ",";
+                    if (i == simbolosEntrada - 2) {
+                        String a = "" + e.isEsAceptacion();
+                        estados[i] = a.toUpperCase();
+                    } else {
+                        if (i == simbolosEntrada - 1) {
+                            String a = "" + e.isEsInicial();
+                            estados[i] = a.toUpperCase();
+                        } else {
+                            for (int k = 0; k < e.getTransiciones().get(i - 1).getEstadosFinales().size(); k++) {
+                                estados[i] += e.getTransiciones().get(i - 1).getEstadosFinales().get(k).getNombre() + ",";
+                            }
+                            estados[i] = estados[i].substring(0, estados[i].length() - 1);
+                        }
                     }
-                    estados[i] = estados[i].substring(0, estados[i].length() - 1);
                 }
             }
             jdata.add(estados);
@@ -217,17 +237,9 @@ public class InteractividadAutomata implements Initializable {
         validarDeterministico();
     }
 
-    public void actualizarAutomata(){
-        controlador.imprimirAutomata();
-        alerta.setTitle("Alerta");
-        alerta.getDialogPane().getChildren().stream().filter(node -> node instanceof Label).forEach(node -> ((Label)node).setMinHeight(Region.USE_PREF_SIZE));
-        if(controllerTransiciones.validarTransicionesCorrectas(tableView.getItems())){
-            controllerTransiciones.vaciarTransiciones();
-            controllerTransiciones.guardarAutomata(tableView.getItems());
-        }else{
-            alerta.setContentText("LAS TRANSICIONES DEBEN SER A ESTADOS");
-            alerta.showAndWait();
-        }
+    public void actualizarAutomata() {
+        controllerTransiciones.vaciarTransiciones();
+        controllerTransiciones.guardarAutomata(tableView.getItems(),4);
         recargarTabla();
         controlador.imprimirAutomata();
     }
