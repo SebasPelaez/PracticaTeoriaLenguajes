@@ -11,10 +11,7 @@ import javafx.print.PrinterJob;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Label;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
@@ -27,6 +24,7 @@ import model.Estado;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 /**
@@ -57,6 +55,39 @@ public class ConstruccionEstados implements Initializable {
         tableView.getItems().addAll(p1);
     }
 
+    @FXML
+    private void borrarEstado(ActionEvent evento) {
+        alerta.setTitle("Alerta");
+        alerta.getDialogPane().getChildren().stream().filter(node -> node instanceof Label).forEach(node -> ((Label)node).setMinHeight(Region.USE_PREF_SIZE));
+        if(tableView.getItems().size()!=0){
+            TextInputDialog dialog = new TextInputDialog();
+            dialog.setTitle("Mensaje de borrado");
+            dialog.setHeaderText("Estas a punto de borrar un estado");
+            dialog.setContentText("¿Cuál estado quieres eliminar?");
+            Optional<String> result = dialog.showAndWait();
+            String a="";
+            if (result.isPresent()){
+                a=result.get();
+            }
+            if(!a.equals("")){
+                if(controller.retornatFilar(tableView.getItems(),a)!=-1){
+                    tableView.getItems().remove(controller.retornatFilar(tableView.getItems(),a));
+                }else{
+                    alerta.setContentText("Ese estado no existe");
+                    alerta.showAndWait();
+                }
+            }else{
+                alerta.setContentText("No copiaste ningún estado");
+                alerta.showAndWait();
+            }
+        }else{
+            alerta.setContentText("No hay estados que borrar");
+            alerta.showAndWait();
+        }
+
+    }
+
+
     @FXML public void validarCaracter(KeyEvent e){
         if(e.getCharacter().equals(",") && simboloAnt.equals(",") || e.getCharacter().equals(" ")){
             e.consume();
@@ -67,7 +98,7 @@ public class ConstruccionEstados implements Initializable {
 
     @FXML
     private void construirTransiciones(ActionEvent evento) throws IOException {
-        //paso a la siguiente ventana
+
         ArrayList<String> s = controller.validarAutomata(tableView.getItems(),txtSimbolos.getText());
         if (s.isEmpty()){
             controller.agregarEstados(tableView.getItems());
@@ -81,13 +112,10 @@ public class ConstruccionEstados implements Initializable {
             for (int i = 0; i < s.size(); i++) {
                 cadenaAlerta += s.get(i)+"\n";
             }
-            System.out.println(cadenaAlerta);
             alerta.setContentText(cadenaAlerta);
             alerta.showAndWait();
         }
-        /*
-        Node source = (Node) evento.getSource();
-        print(source.getParent());*/
+
     }
 
     @Override

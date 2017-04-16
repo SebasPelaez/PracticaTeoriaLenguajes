@@ -125,6 +125,16 @@ public class Handler_ConstruirEstados {
         return false;
     }
 
+    public int retornatFilar(ObservableList<Estado> estados,String nombre){
+        int index=-1;
+        for (Estado e: estados){
+            if (e.getNombre().equals(nombre)){
+                return estados.indexOf(e);
+            }
+        }
+        return index;
+    }
+
     public ArrayList<String> validarAutomata(ObservableList<Estado> estados,String cadenaSimbolos){
         ArrayList<String> valido = new ArrayList<>();
         if(estaVaciaCadena(cadenaSimbolos)){

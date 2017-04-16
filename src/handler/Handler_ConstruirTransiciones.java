@@ -14,14 +14,14 @@ public class Handler_ConstruirTransiciones {
 
     private Handler_Automata controllerAutomata = new Handler_Automata();
 
-    public void guardarAutomata(ObservableList data){
+    public void guardarAutomata(ObservableList data,int bandera){
         Transicion transicion;
         ArrayList<Transicion> transiciones;
         for (int i=0;i<data.size();i++){
             transiciones = new ArrayList<>();
             if (data.get(i) instanceof String[]) {
                 String[] t = (String[]) data.get(i);
-                for (int j=1;j<t.length;j++){
+                for (int j=1;j<t.length-bandera;j++){
                     String vectorEstados[] = t[j].split(",");
                     transicion = new Transicion(Automata.getInstance().getSimbolos()[j-1]);
                     for(int k=0;k<vectorEstados.length;k++){
