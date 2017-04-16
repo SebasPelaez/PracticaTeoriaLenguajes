@@ -5,8 +5,6 @@ import model.Estado;
 import model.Transicion;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 
 /**
  * Created by Sebas on 1/04/2017.
@@ -81,8 +79,8 @@ public class Handler_Automata {
 
     public void simplificarAutomata(){
         System.out.println("---------");
-        ArrayList<Estado> sinEstadosExtraños = quitarEstadosExtranios();
-        ArrayList<ArrayList<Estado>> estadosSimplificados = quitarEstadosEquivalentes(sinEstadosExtraños);
+        ArrayList<Estado> sinEstadosExtranios = quitarEstadosExtranios();
+        ArrayList<ArrayList<Estado>> estadosSimplificados = quitarEstadosEquivalentes(sinEstadosExtranios);
         convertirEnNuevosEstados(estadosSimplificados);
         sortEstadoInicial();
         imprimirAutomata();
