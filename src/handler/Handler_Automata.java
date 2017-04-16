@@ -25,7 +25,6 @@ public class Handler_Automata {
     }
 
     public boolean reconocerSecuencia(String s){
-
         Estado estadoActual = obtenerEstadoInicial();
         if(s.isEmpty() && estadoActual.isEsAceptacion()){
             return true;
@@ -37,11 +36,12 @@ public class Handler_Automata {
         Transicion t;
         while(i < s.length()){
             actualSimbolo = String.valueOf(c[i]);
-            System.out.println(actualSimbolo);
             t = estadoActual.getTransiciones().get(j);
-            System.out.println("Estado actual: "+estadoActual.getNombre());
             if(t.getSimbolo().equals(actualSimbolo)){
                 estadoActual = t.getEstadosFinales().get(0);
+                if(estadoActual.isEsError()){
+                    return false;
+                }
                 j=0;
                 i++;
             }else{
