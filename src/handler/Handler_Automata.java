@@ -78,7 +78,6 @@ public class Handler_Automata {
     }
 
     public void simplificarAutomata(){
-        System.out.println("---------");
         ArrayList<Estado> sinEstadosExtranios = quitarEstadosExtranios();
         ArrayList<ArrayList<Estado>> estadosSimplificados = quitarEstadosEquivalentes(sinEstadosExtranios);
         convertirEnNuevosEstados(estadosSimplificados);
