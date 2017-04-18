@@ -9,25 +9,14 @@ public class Automata {
 
     private ArrayList<Estado> estados;
     private String[] simbolos;
-    private static Automata instance;
 
-    public static Automata getInstance(){
-        if(instance==null){
-            instance = new Automata();
-        }
-        return instance;
-    }
 
-    public void reinicializarAutomata(){
-        instance=null;
-    }
-/*
     public Automata(ArrayList<Estado> estados, String[] simbolos){
         this.estados = estados;
         this.simbolos = simbolos;
     }
-*/
-    private Automata(){}
+
+    public Automata(){}
 
     public ArrayList<Estado> getEstados() {
         return estados;

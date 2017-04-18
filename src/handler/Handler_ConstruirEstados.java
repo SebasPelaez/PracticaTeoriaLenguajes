@@ -10,10 +10,10 @@ import java.util.ArrayList;
  * Created by Sebas on 1/04/2017.
  */
 public class Handler_ConstruirEstados {
-    Automata automata;
+    private Automata automata;
 
-    public Handler_ConstruirEstados(){
-        automata = Automata.getInstance();
+    public Handler_ConstruirEstados(Automata automata){
+        this.automata = automata;
     }
 
     public void agregarSimbolos(String cadena){
@@ -58,7 +58,7 @@ public class Handler_ConstruirEstados {
             estados.add(e);
         }
         automata.setEstados(estados);
-        Handler_Automata handler_automata = new Handler_Automata();
+        Handler_Automata handler_automata = new Handler_Automata(automata);
         handler_automata.sortEstadoInicial();
     }
 

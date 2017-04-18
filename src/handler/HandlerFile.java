@@ -24,7 +24,7 @@ public class HandlerFile {
         stage = s;
     }
 
-    public void crearAutomata() throws IOException {
+    public void crearAutomata(Automata automata) throws IOException {
         fileChooser = new FileChooser();
         fileChooser.setTitle("Open Resource File");
         fileChooser.getExtensionFilters().addAll(
@@ -87,8 +87,8 @@ public class HandlerFile {
                 System.out.println(e2);
             }
         }
-        Automata.getInstance().setEstados(estadosObjecto);
-        Automata.getInstance().setSimbolos(simbolos);
+        automata.setEstados(estadosObjecto);
+        automata.setSimbolos(simbolos);
     }
 
     private String quitarEspacios(String s){
@@ -169,8 +169,8 @@ public class HandlerFile {
         return e;
     }
 
-    public void guardarAutomata(){
-        simbolos = Automata.getInstance().getSimbolos();
+    public void guardarAutomata(Automata automata){
+        simbolos = automata.getSimbolos();
         FileChooser fileChooser = new FileChooser();
         file = fileChooser.showSaveDialog(stage);
         String linea="";
@@ -178,8 +178,8 @@ public class HandlerFile {
         try{
             FileWriter w = new FileWriter(file);
             BufferedWriter bw = new BufferedWriter(w);
-            for ( i = 0; i < Automata.getInstance().getEstados().size(); i++) {
-                Estado e = Automata.getInstance().getEstados().get(i);
+            for ( i = 0; i < automata.getEstados().size(); i++) {
+                Estado e = automata.getEstados().get(i);
                 if(e.isEsAceptacion()){
                     if(e.isEsInicial()){
                         linea += "$"+e.getNombre()+",";
@@ -215,8 +215,8 @@ public class HandlerFile {
             bw.write(linea);
             bw.newLine();
             linea = "";
-            for (i = 0; i <  Automata.getInstance().getEstados().size(); i++) {
-                Estado estadoActual = Automata.getInstance().getEstados().get(i);
+            for (i = 0; i <  automata.getEstados().size(); i++) {
+                Estado estadoActual = automata.getEstados().get(i);
                 int ts = estadoActual.getTransiciones().size();
                 linea += estadoActual.getNombre()+"-";
                 for (int j = 0; j < ts; j++) {

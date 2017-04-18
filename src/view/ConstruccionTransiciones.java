@@ -1,15 +1,11 @@
 package view;
 
 import com.jfoenix.controls.JFXButton;
-import handler.HandlerFile;
 import handler.Handler_ConstruirTransiciones;
 import javafx.beans.property.ReadOnlyStringWrapper;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
-import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -17,19 +13,14 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
-import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.TextFieldTableCell;
-import javafx.scene.layout.Region;
 import javafx.stage.Stage;
-import javafx.util.Callback;
 import model.Automata;
-import model.Estado;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -47,9 +38,10 @@ public class ConstruccionTransiciones implements Initializable {
     private Handler_ConstruirTransiciones controller;
     private List<String[]> jdata;
     private Alert alerta = new Alert(Alert.AlertType.WARNING);
+    private Automata automata;
 
     @FXML private void guardarAutomata(ActionEvent evento) throws IOException {
-        alerta.setTitle("Alerta");
+        /*alerta.setTitle("Alerta");
         alerta.getDialogPane().getChildren().stream().filter(node -> node instanceof Label).forEach(node -> ((Label)node).setMinHeight(Region.USE_PREF_SIZE));
         if(controller.validarTransicionesCorrectas(tableView.getItems())){
             controller.guardarAutomata(tableView.getItems(),0);
@@ -57,19 +49,19 @@ public class ConstruccionTransiciones implements Initializable {
         }else{
             alerta.setContentText("LAS TRANSICIONES DEBEN SER A ESTADOS");
             alerta.showAndWait();
-        }
+        }*/
 
     }
 
     @FXML
     private void regresar(ActionEvent evento) throws IOException {
-        Automata.getInstance().reinicializarAutomata();
+        automata = new Automata();
         transiciones(evento,"Principal");
     }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        controller = new Handler_ConstruirTransiciones();
+        controller = new Handler_ConstruirTransiciones(automata);
         datos = FXCollections.observableArrayList();
         jdata = new LinkedList<>(); //Here is the data
         simbolosEntrada = 0;
@@ -77,14 +69,19 @@ public class ConstruccionTransiciones implements Initializable {
         agregarFilas();
         tableView.getItems().addAll(datos);
         tableView.setEditable(true);
+
+    }
+
+    public void setAutomata(Automata automata){
+        this.automata = automata;
     }
 
     private void agregarFilas() {
-        for (int j=0;j<Automata.getInstance().getEstados().size();j++) {
+        for (int j=0;j<automata.getEstados().size();j++) {
             String[] estados = new String[simbolosEntrada];
             for (int i = 0; i < simbolosEntrada; i++) {
                 if(i==0){
-                    estados[i]=Automata.getInstance().getEstados().get(j).getNombre();
+                    estados[i]=automata.getEstados().get(j).getNombre();
                 }else{
                     estados[i]="Transición";
                 }
@@ -95,14 +92,14 @@ public class ConstruccionTransiciones implements Initializable {
     }
 
     public void inicializarColumnas(){
-        for (int i=0;i<=Automata.getInstance().getSimbolos().length;i++){
+        for (int i=0;i<=automata.getSimbolos().length;i++){
             TableColumn<String[], String> columna;
             int j = i;
             if(i==0){
                 columna  = new TableColumn<>("Estado/Símbolo");
                 columna.setPrefWidth(120);
             }else{
-                columna = new TableColumn<>(Automata.getInstance().getSimbolos()[i-1]);
+                columna = new TableColumn<>(automata.getSimbolos()[i-1]);
                 columna.setCellFactory(TextFieldTableCell.forTableColumn());
                 columna.setPrefWidth(70);
             }

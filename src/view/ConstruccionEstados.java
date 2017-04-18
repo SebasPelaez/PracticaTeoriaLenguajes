@@ -19,6 +19,7 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Region;
 import javafx.stage.Stage;
+import model.Automata;
 import model.Estado;
 
 import java.io.IOException;
@@ -44,6 +45,7 @@ public class ConstruccionEstados implements Initializable {
     private JFXButton btnTransiciones;
 
     private String simboloAnt = "";
+    private Automata automata;
 
     private Handler_ConstruirEstados controller;
 
@@ -121,7 +123,8 @@ public class ConstruccionEstados implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
-        controller = new Handler_ConstruirEstados();
+        automata= new Automata();
+        controller = new Handler_ConstruirEstados(automata);
 
         TableColumn<Estado, String> colNombre = new TableColumn<>("Nombre");
         TableColumn<Estado, Boolean> colInicial = new TableColumn<>("Inicial");
@@ -154,7 +157,10 @@ public class ConstruccionEstados implements Initializable {
     }
 
     private void transiciones(ActionEvent event) throws IOException {
-        Parent home_parent = FXMLLoader.load(getClass().getClassLoader().getResource("view/ConstruccionTransiciones_View.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getClassLoader().getResource("view/ConstruccionTransiciones_View.fxml"));
+        Parent home_parent = (Parent)fxmlLoader.load();
+        ConstruccionTransiciones controller =  fxmlLoader.getController();
+        controller.setAutomata(automata);
         Scene home_scene = new Scene(home_parent);
         Stage app_stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         app_stage.hide();

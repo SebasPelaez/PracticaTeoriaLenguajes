@@ -6,7 +6,6 @@ import com.jfoenix.controls.JFXTextField;
 import handler.HandlerFile;
 import handler.Handler_Automata;
 import handler.Handler_ConstruirTransiciones;
-import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -21,11 +20,8 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.layout.Region;
 import javafx.stage.Stage;
-import model.Automata;
-import model.Estado;
 
 import java.io.IOException;
 import java.net.URL;
@@ -66,7 +62,7 @@ public class InteractividadAutomata implements Initializable {
     @FXML
     private void guardarEnDisco(ActionEvent evento) {
         HandlerFile handlerFile = new HandlerFile((Stage) ((Node) evento.getSource()).getScene().getWindow());
-        handlerFile.guardarAutomata();
+        //handlerFile.guardarAutomata();
     }
 
     @FXML
@@ -103,15 +99,15 @@ public class InteractividadAutomata implements Initializable {
 
     @FXML
     private void nuevoAutomata(ActionEvent evento) throws IOException {
-        Automata.getInstance().reinicializarAutomata();
+        //Automata.getInstance().reinicializarAutomata();
         transiciones(evento);
     }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         alerta = new Alert(Alert.AlertType.WARNING);
-        controllerTransiciones = new Handler_ConstruirTransiciones();
-        controlador = new Handler_Automata();
+        //controllerTransiciones = new Handler_ConstruirTransiciones();
+        //controlador = new Handler_Automata();
         controlador.sortEstadoInicial();
         datos = FXCollections.observableArrayList();
         jdata = new LinkedList<>(); //Here is the data
@@ -159,7 +155,7 @@ public class InteractividadAutomata implements Initializable {
 
     public void inicializarColumnas() {
         TableColumn<String[], String> columna = null;
-        for (int i = 0; i <= Automata.getInstance().getSimbolos().length + 2; i++) {
+        /*for (int i = 0; i <= Automata.getInstance().getSimbolos().length + 2; i++) {
             int j = i;
             if (i == 0) {
                 columna = new TableColumn<>("Estado/Símbolo");
@@ -196,11 +192,11 @@ public class InteractividadAutomata implements Initializable {
             });
             tableView.getColumns().addAll(columna);
             simbolosEntrada++;
-        }
+        }*/
     }
 
     private void agregarFilas() {
-        for (int j = 0; j < Automata.getInstance().getEstados().size(); j++) {
+        /*for (int j = 0; j < Automata.getInstance().getEstados().size(); j++) {
             String[] estados = new String[simbolosEntrada + 2];
             Estado e = Automata.getInstance().getEstados().get(j);
             for (int i = 0; i < simbolosEntrada; i++) {
@@ -226,7 +222,7 @@ public class InteractividadAutomata implements Initializable {
             }
             jdata.add(estados);
         }
-        datos = FXCollections.observableList(jdata);
+        datos = FXCollections.observableList(jdata);*/
     }
 
     public void recargarTabla() {

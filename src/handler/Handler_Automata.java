@@ -11,7 +11,11 @@ import java.util.ArrayList;
  */
 public class Handler_Automata {
 
-    Automata automata = Automata.getInstance();
+    private Automata automata;
+
+    public Handler_Automata(Automata automata){
+        this.automata = automata;
+    }
 
     public Estado obtenerEstadoInicial(){
         Estado e = null;
@@ -96,7 +100,7 @@ public class Handler_Automata {
             estados.add(nuevo);
         }
         validarTransiciones(estadosSimplificados,estados);
-        Automata.getInstance().setEstados(estados);
+        automata.setEstados(estados);
     }
 
     private String concatenarNombres(ArrayList<Estado> estados){
@@ -148,7 +152,7 @@ public class Handler_Automata {
 
     private ArrayList<Estado> quitarEstadosExtranios() {
         ArrayList<Estado> estados = new ArrayList<>();
-        Estado nuevoEstado = Automata.getInstance().getEstados().get(0);
+        Estado nuevoEstado = automata.getEstados().get(0);
         estados.add(nuevoEstado);
         boolean bandera=true;
         int seguimientoEstado=0;
@@ -191,7 +195,7 @@ public class Handler_Automata {
         boolean bandera=false;
         while (seguimientoEstadosFinales<estadosFinales.size() &&!bandera){
             int j=0;
-            while (j<Automata.getInstance().getSimbolos().length && !bandera){
+            while (j<automata.getSimbolos().length && !bandera){
                 ArrayList<String> nombresEstados = new ArrayList<>();
                 int i=0;
                 while (i<estadosFinales.get(seguimientoEstadosFinales).size()) {
@@ -293,11 +297,11 @@ public class Handler_Automata {
     }
 
     public void imprimirAutomata(){
-        for (String simbolo:Automata.getInstance().getSimbolos()){
+        for (String simbolo:automata.getSimbolos()){
             System.out.print("\t"+simbolo);
         }
         System.out.println();
-        for(Estado estado: Automata.getInstance().getEstados()){
+        for(Estado estado: automata.getEstados()){
             String e = estado.getNombre();
             System.out.print(e);
             for (Transicion transicion:estado.getTransiciones()){
