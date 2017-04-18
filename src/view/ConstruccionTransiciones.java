@@ -13,9 +13,11 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.TextFieldTableCell;
+import javafx.scene.layout.Region;
 import javafx.stage.Stage;
 import model.Automata;
 
@@ -41,7 +43,7 @@ public class ConstruccionTransiciones implements Initializable {
     private Automata automata;
 
     @FXML private void guardarAutomata(ActionEvent evento) throws IOException {
-        /*alerta.setTitle("Alerta");
+        alerta.setTitle("Alerta");
         alerta.getDialogPane().getChildren().stream().filter(node -> node instanceof Label).forEach(node -> ((Label)node).setMinHeight(Region.USE_PREF_SIZE));
         if(controller.validarTransicionesCorrectas(tableView.getItems())){
             controller.guardarAutomata(tableView.getItems(),0);
@@ -49,7 +51,7 @@ public class ConstruccionTransiciones implements Initializable {
         }else{
             alerta.setContentText("LAS TRANSICIONES DEBEN SER A ESTADOS");
             alerta.showAndWait();
-        }*/
+        }
 
     }
 
@@ -61,6 +63,10 @@ public class ConstruccionTransiciones implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+
+    }
+
+    public void initComponents(){
         controller = new Handler_ConstruirTransiciones(automata);
         datos = FXCollections.observableArrayList();
         jdata = new LinkedList<>(); //Here is the data
@@ -69,7 +75,6 @@ public class ConstruccionTransiciones implements Initializable {
         agregarFilas();
         tableView.getItems().addAll(datos);
         tableView.setEditable(true);
-
     }
 
     public void setAutomata(Automata automata){
@@ -128,7 +133,11 @@ public class ConstruccionTransiciones implements Initializable {
                 home_parent = FXMLLoader.load(getClass().getClassLoader().getResource("view/Principal.fxml"));
                 break;
             case "Transiciones":
-                home_parent = FXMLLoader.load(getClass().getClassLoader().getResource("view/Interactividad.fxml"));
+                FXMLLoader fxmlLoader = new FXMLLoader(getClass().getClassLoader().getResource("view/Interactividad.fxml"));
+                home_parent = (Parent)fxmlLoader.load();
+                InteractividadAutomata controller =  fxmlLoader.getController();
+                controller.setAutomata(automata);
+                controller.initComponents();
                 break;
         }
         Scene home_scene = new Scene(home_parent);

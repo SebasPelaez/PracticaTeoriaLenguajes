@@ -122,10 +122,8 @@ public class ConstruccionEstados implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-
         automata= new Automata();
         controller = new Handler_ConstruirEstados(automata);
-
         TableColumn<Estado, String> colNombre = new TableColumn<>("Nombre");
         TableColumn<Estado, Boolean> colInicial = new TableColumn<>("Inicial");
         TableColumn<Estado, Boolean> colAceptacion = new TableColumn<>("Aceptacion");
@@ -161,6 +159,7 @@ public class ConstruccionEstados implements Initializable {
         Parent home_parent = (Parent)fxmlLoader.load();
         ConstruccionTransiciones controller =  fxmlLoader.getController();
         controller.setAutomata(automata);
+        controller.initComponents();
         Scene home_scene = new Scene(home_parent);
         Stage app_stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         app_stage.hide();

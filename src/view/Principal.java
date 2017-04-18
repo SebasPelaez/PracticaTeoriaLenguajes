@@ -10,6 +10,7 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import model.Automata;
 
 import java.io.IOException;
 import java.net.URL;
@@ -45,8 +46,12 @@ public class Principal implements Initializable {
                 break;
             case 1:
                 HandlerFile hf = new HandlerFile(escena);
-                //hf.crearAutomata();
-                home_parent = FXMLLoader.load(getClass().getClassLoader().getResource("view/Interactividad.fxml"));
+                Automata automata =  hf.crearAutomata();
+                FXMLLoader fxmlLoader = new FXMLLoader(getClass().getClassLoader().getResource("view/Interactividad.fxml"));
+                home_parent = (Parent)fxmlLoader.load();
+                InteractividadAutomata controller =  fxmlLoader.getController();
+                controller.setAutomata(automata);
+                controller.initComponents();
                 break;
         }
         Scene home_scene = new Scene(home_parent);

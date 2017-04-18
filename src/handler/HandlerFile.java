@@ -24,9 +24,9 @@ public class HandlerFile {
         stage = s;
     }
 
-    public void crearAutomata(Automata automata) throws IOException {
+    public Automata crearAutomata() throws IOException {
         fileChooser = new FileChooser();
-        fileChooser.setTitle("Open Resource File");
+        fileChooser.setTitle("Cargar Archivo del Autómata");
         fileChooser.getExtensionFilters().addAll(
                 new FileChooser.ExtensionFilter("text", "*.txt")
         );
@@ -87,8 +87,7 @@ public class HandlerFile {
                 System.out.println(e2);
             }
         }
-        automata.setEstados(estadosObjecto);
-        automata.setSimbolos(simbolos);
+        return new Automata(estadosObjecto,simbolos);
     }
 
     private String quitarEspacios(String s){
@@ -169,10 +168,14 @@ public class HandlerFile {
         return e;
     }
 
-    public void guardarAutomata(Automata automata){
+    public void guardarAutomata(Automata automata,boolean bandera){
         simbolos = automata.getSimbolos();
-        FileChooser fileChooser = new FileChooser();
-        file = fileChooser.showSaveDialog(stage);
+        if(bandera){
+            FileChooser fileChooser = new FileChooser();
+            file = fileChooser.showSaveDialog(stage);
+        }else{
+            file = new File("./src/temporal/temporal.txt");
+        }
         String linea="";
         int i;
         try{

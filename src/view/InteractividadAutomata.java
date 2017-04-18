@@ -6,6 +6,7 @@ import com.jfoenix.controls.JFXTextField;
 import handler.HandlerFile;
 import handler.Handler_Automata;
 import handler.Handler_ConstruirTransiciones;
+import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -16,13 +17,14 @@ import javafx.print.PrinterJob;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Label;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
+import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.layout.Region;
 import javafx.stage.Stage;
+import model.Automata;
+import model.Estado;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.LinkedList;
@@ -45,12 +47,25 @@ public class InteractividadAutomata implements Initializable {
     @FXML
     private JFXButton btnConvertirDeterministico;
 
+    @FXML
+    private ComboBox listaOpciones;
+
     private Handler_Automata controlador;
     private int simbolosEntrada;
     private List<String[]> jdata;
     private ObservableList<String[]> datos;
     private Handler_ConstruirTransiciones controllerTransiciones;
     private Alert alerta;
+    private Automata automata;
+
+    private  ObservableList<String> options =
+            FXCollections.observableArrayList(
+                    "Option 1",
+                    "Option 2",
+                    "Option 3"
+            );
+
+
 
     @FXML
     private void convertirDeterministico(ActionEvent evento) {
@@ -61,8 +76,9 @@ public class InteractividadAutomata implements Initializable {
 
     @FXML
     private void guardarEnDisco(ActionEvent evento) {
+
         HandlerFile handlerFile = new HandlerFile((Stage) ((Node) evento.getSource()).getScene().getWindow());
-        //handlerFile.guardarAutomata();
+        handlerFile.guardarAutomata(automata,true);
     }
 
     @FXML
@@ -99,15 +115,30 @@ public class InteractividadAutomata implements Initializable {
 
     @FXML
     private void nuevoAutomata(ActionEvent evento) throws IOException {
-        //Automata.getInstance().reinicializarAutomata();
+        automata = new Automata();
         transiciones(evento);
+    }
+
+    @FXML
+    private void cargarSegundoAutomata(ActionEvent evento) throws IOException {
+        HandlerFile handlerFile = new HandlerFile((Stage) ((Node) evento.getSource()).getScene().getWindow());
+        handlerFile.guardarAutomata(automata,false);
     }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        listaOpciones = new ComboBox(options);
+        File file = new File("./src/temporal/temporal.txt");
+        if(file.exists()){
+            System.out.println("Aqui carga el otro autómata de existir");
+            /**/
+        }
+    }
+
+    public void initComponents(){
         alerta = new Alert(Alert.AlertType.WARNING);
-        //controllerTransiciones = new Handler_ConstruirTransiciones();
-        //controlador = new Handler_Automata();
+        controllerTransiciones = new Handler_ConstruirTransiciones(automata);
+        controlador = new Handler_Automata(automata);
         controlador.sortEstadoInicial();
         datos = FXCollections.observableArrayList();
         jdata = new LinkedList<>(); //Here is the data
@@ -115,8 +146,11 @@ public class InteractividadAutomata implements Initializable {
         validarDeterministico();
         inicializarColumnas();
         recargarTabla();
+
         tableView.setEditable(true);
     }
+
+
 
     private void validarDeterministico() {
         chkSiDeterministico.setSelected(false);
@@ -129,6 +163,10 @@ public class InteractividadAutomata implements Initializable {
             btnConvertirDeterministico.setDisable(false);
         }
 
+    }
+
+    public void setAutomata(Automata automata){
+        this.automata = automata;
     }
 
     private void print(final Node node) {
@@ -155,21 +193,21 @@ public class InteractividadAutomata implements Initializable {
 
     public void inicializarColumnas() {
         TableColumn<String[], String> columna = null;
-        /*for (int i = 0; i <= Automata.getInstance().getSimbolos().length + 2; i++) {
+        for (int i = 0; i <= automata.getSimbolos().length + 2; i++) {
             int j = i;
             if (i == 0) {
                 columna = new TableColumn<>("Estado/Símbolo");
                 columna.setPrefWidth(120);
             } else {
-                if (i == Automata.getInstance().getSimbolos().length + 1) {
+                if (i == automata.getSimbolos().length + 1) {
                     columna = new TableColumn<>("Aceptación");
                     columna.setPrefWidth(80);
                 } else {
-                    if (i == Automata.getInstance().getSimbolos().length + 2) {
+                    if (i == automata.getSimbolos().length + 2) {
                         columna = new TableColumn<>("Inicial");
                         columna.setPrefWidth(90);
                     } else {
-                        columna = new TableColumn<>(Automata.getInstance().getSimbolos()[i - 1]);
+                        columna = new TableColumn<>(automata.getSimbolos()[i - 1]);
                         columna.setCellFactory(TextFieldTableCell.forTableColumn());
                         columna.setPrefWidth(70);
                     }
@@ -192,13 +230,13 @@ public class InteractividadAutomata implements Initializable {
             });
             tableView.getColumns().addAll(columna);
             simbolosEntrada++;
-        }*/
+        }
     }
 
     private void agregarFilas() {
-        /*for (int j = 0; j < Automata.getInstance().getEstados().size(); j++) {
+        for (int j = 0; j < automata.getEstados().size(); j++) {
             String[] estados = new String[simbolosEntrada + 2];
-            Estado e = Automata.getInstance().getEstados().get(j);
+            Estado e = automata.getEstados().get(j);
             for (int i = 0; i < simbolosEntrada; i++) {
                 estados[i] = "";
                 if (i == 0) {
@@ -222,7 +260,7 @@ public class InteractividadAutomata implements Initializable {
             }
             jdata.add(estados);
         }
-        datos = FXCollections.observableList(jdata);*/
+        datos = FXCollections.observableList(jdata);
     }
 
     public void recargarTabla() {
