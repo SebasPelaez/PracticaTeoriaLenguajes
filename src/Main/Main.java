@@ -1,13 +1,10 @@
 package Main;
 
-import handler.HandlerFile;
-import handler.Handler_Automata;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import model.Automata;
 
 public class Main extends Application {
 
@@ -26,7 +23,7 @@ public class Main extends Application {
 
         setPrimaryStage(primaryStage); // **Set the Stage**
         Parent root = FXMLLoader.load(getClass().getClassLoader().getResource("view/Principal.fxml"));
-        primaryStage.setTitle("Peppin World");
+        primaryStage.setTitle("Autómatas");
         primaryStage.setScene(new Scene(root, 400, 380));
         primaryStage.show();
 
