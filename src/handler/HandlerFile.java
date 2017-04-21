@@ -24,13 +24,19 @@ public class HandlerFile {
         stage = s;
     }
 
-    public Automata crearAutomata() throws IOException {
-        fileChooser = new FileChooser();
-        fileChooser.setTitle("Cargar Archivo del Autómata");
-        fileChooser.getExtensionFilters().addAll(
-                new FileChooser.ExtensionFilter("text", "*.txt")
-        );
-        file = fileChooser.showOpenDialog(stage);
+    public HandlerFile(){}
+
+    public Automata crearAutomata(String path) throws IOException {
+        if(path.equals("")){
+            fileChooser = new FileChooser();
+            fileChooser.setTitle("Cargar Archivo del Autómata");
+            fileChooser.getExtensionFilters().addAll(
+                    new FileChooser.ExtensionFilter("text", "*.txt")
+            );
+            file = fileChooser.showOpenDialog(stage);
+        }else{
+            file = new File(path);
+        }
         FileReader fr = null;
         BufferedReader br = null;
         String linea;

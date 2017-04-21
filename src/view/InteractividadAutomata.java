@@ -27,6 +27,7 @@ import model.Estado;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -36,6 +37,8 @@ import java.util.ResourceBundle;
  */
 public class InteractividadAutomata implements Initializable {
 
+    @FXML
+    private TableView<String[]> tableViewNuevoAutomata;
     @FXML
     private TableView<String[]> tableView;
     @FXML
@@ -51,12 +54,15 @@ public class InteractividadAutomata implements Initializable {
     private ComboBox listaOpciones;
 
     private Handler_Automata controlador;
+
     private int simbolosEntrada;
     private List<String[]> jdata;
     private ObservableList<String[]> datos;
     private Handler_ConstruirTransiciones controllerTransiciones;
-    private Alert alerta;
     private Automata automata;
+
+    private ArrayList<tableViewAutomata> automatas;
+    private Alert alerta;
 
     private  ObservableList<String> options =
             FXCollections.observableArrayList(
@@ -71,7 +77,7 @@ public class InteractividadAutomata implements Initializable {
     private void convertirDeterministico(ActionEvent evento) {
         controlador.convertirAutomataAFN();
         controlador.imprimirAutomata();
-        recargarTabla();
+        //recargarTabla();
     }
 
     @FXML
@@ -85,7 +91,7 @@ public class InteractividadAutomata implements Initializable {
     private void simplificar(ActionEvent evento) {
         controlador.imprimirAutomata();
         controlador.simplificarAutomata();
-        recargarTabla();
+        //recargarTabla();
     }
 
     @FXML
@@ -115,42 +121,44 @@ public class InteractividadAutomata implements Initializable {
 
     @FXML
     private void nuevoAutomata(ActionEvent evento) throws IOException {
-        automata = new Automata();
         transiciones(evento);
     }
 
     @FXML
     private void cargarSegundoAutomata(ActionEvent evento) throws IOException {
-        HandlerFile handlerFile = new HandlerFile((Stage) ((Node) evento.getSource()).getScene().getWindow());
+        HandlerFile handlerFile = new HandlerFile();
         handlerFile.guardarAutomata(automata,false);
+        transiciones(evento);
     }
 
     @Override
-    public void initialize(URL location, ResourceBundle resources) {
+    public void initialize(URL location, ResourceBundle resources)  {
         listaOpciones = new ComboBox(options);
         File file = new File("./src/temporal/temporal.txt");
+        automatas = new ArrayList<>();
         if(file.exists()){
-            System.out.println("Aqui carga el otro autómata de existir");
-            /**/
+            HandlerFile handlerFile = new HandlerFile();
+            Automata nuevoAutomata = null;
+            try {
+                nuevoAutomata = handlerFile.crearAutomata("./src/temporal/temporal.txt");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            automatas.add(new tableViewAutomata(nuevoAutomata,tableViewNuevoAutomata));
         }
     }
 
     public void initComponents(){
         alerta = new Alert(Alert.AlertType.WARNING);
-        controllerTransiciones = new Handler_ConstruirTransiciones(automata);
         controlador = new Handler_Automata(automata);
         controlador.sortEstadoInicial();
         datos = FXCollections.observableArrayList();
         jdata = new LinkedList<>(); //Here is the data
         simbolosEntrada = 0;
         validarDeterministico();
-        inicializarColumnas();
-        recargarTabla();
-
+        automatas.add(new tableViewAutomata(automata,tableView));
         tableView.setEditable(true);
     }
-
-
 
     private void validarDeterministico() {
         chkSiDeterministico.setSelected(false);
@@ -191,90 +199,4 @@ public class InteractividadAutomata implements Initializable {
         app_stage.show();
     }
 
-    public void inicializarColumnas() {
-        TableColumn<String[], String> columna = null;
-        for (int i = 0; i <= automata.getSimbolos().length + 2; i++) {
-            int j = i;
-            if (i == 0) {
-                columna = new TableColumn<>("Estado/Símbolo");
-                columna.setPrefWidth(120);
-            } else {
-                if (i == automata.getSimbolos().length + 1) {
-                    columna = new TableColumn<>("Aceptación");
-                    columna.setPrefWidth(80);
-                } else {
-                    if (i == automata.getSimbolos().length + 2) {
-                        columna = new TableColumn<>("Inicial");
-                        columna.setPrefWidth(90);
-                    } else {
-                        columna = new TableColumn<>(automata.getSimbolos()[i - 1]);
-                        columna.setCellFactory(TextFieldTableCell.forTableColumn());
-                        columna.setPrefWidth(70);
-                    }
-                }
-
-            }
-            columna.setCellValueFactory(cellData -> {
-                String[] rowData = cellData.getValue();
-                if (j >= rowData.length) {
-                    return new ReadOnlyStringWrapper("");
-                } else {
-                    String cellValue = rowData[j];
-                    return new ReadOnlyStringWrapper(cellValue);
-                }
-            });
-            columna.setOnEditCommit(event -> {
-                String[] row = event.getRowValue();
-                row[j] = event.getNewValue();
-                actualizarAutomata();
-            });
-            tableView.getColumns().addAll(columna);
-            simbolosEntrada++;
-        }
-    }
-
-    private void agregarFilas() {
-        for (int j = 0; j < automata.getEstados().size(); j++) {
-            String[] estados = new String[simbolosEntrada + 2];
-            Estado e = automata.getEstados().get(j);
-            for (int i = 0; i < simbolosEntrada; i++) {
-                estados[i] = "";
-                if (i == 0) {
-                    estados[i] = e.getNombre();
-                } else {
-                    if (i == simbolosEntrada - 2) {
-                        String a = "" + e.isEsAceptacion();
-                        estados[i] = a.toUpperCase();
-                    } else {
-                        if (i == simbolosEntrada - 1) {
-                            String a = "" + e.isEsInicial();
-                            estados[i] = a.toUpperCase();
-                        } else {
-                            for (int k = 0; k < e.getTransiciones().get(i - 1).getEstadosFinales().size(); k++) {
-                                estados[i] += e.getTransiciones().get(i - 1).getEstadosFinales().get(k).getNombre() + ",";
-                            }
-                            estados[i] = estados[i].substring(0, estados[i].length() - 1);
-                        }
-                    }
-                }
-            }
-            jdata.add(estados);
-        }
-        datos = FXCollections.observableList(jdata);
-    }
-
-    public void recargarTabla() {
-        datos.clear();
-        tableView.getItems().clear();
-        agregarFilas();
-        tableView.getItems().addAll(datos);
-        validarDeterministico();
-    }
-
-    public void actualizarAutomata() {
-        controllerTransiciones.vaciarTransiciones();
-        controllerTransiciones.guardarAutomata(tableView.getItems(),4);
-        recargarTabla();
-        controlador.imprimirAutomata();
-    }
 }

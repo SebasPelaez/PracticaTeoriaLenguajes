@@ -46,7 +46,7 @@ public class Principal implements Initializable {
                 break;
             case 1:
                 HandlerFile hf = new HandlerFile(escena);
-                Automata automata =  hf.crearAutomata();
+                Automata automata =  hf.crearAutomata("");
                 FXMLLoader fxmlLoader = new FXMLLoader(getClass().getClassLoader().getResource("view/Interactividad.fxml"));
                 home_parent = (Parent)fxmlLoader.load();
                 InteractividadAutomata controller =  fxmlLoader.getController();
