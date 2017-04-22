@@ -6,6 +6,8 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
+import java.io.File;
+
 public class Main extends Application {
 
     private static Stage primaryStage;
@@ -25,7 +27,14 @@ public class Main extends Application {
         Parent root = FXMLLoader.load(getClass().getClassLoader().getResource("view/Principal.fxml"));
         primaryStage.setTitle("Autómatas");
         primaryStage.setScene(new Scene(root, 400, 380));
+        primaryStage.setOnCloseRequest(event -> {
+            File file = new File("./src/temporal/temporal.txt");
+            if(file.exists()){
+                file.delete();
+            }
+        });
         primaryStage.show();
+
 
 /*
         Handler_Automata automata = new Handler_Automata();
@@ -39,6 +48,9 @@ public class Main extends Application {
 
 
     }
+
+
+
 
 
     public static void main(String[] args) {

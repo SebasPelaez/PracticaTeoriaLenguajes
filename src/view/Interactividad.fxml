@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.effect.*?>
 <?import javafx.scene.paint.*?>
 <?import javafx.scene.text.*?>
 <?import com.jfoenix.controls.*?>
@@ -11,10 +12,13 @@
 
 <AnchorPane prefHeight="481.0" prefWidth="787.0" style="-fx-background-color: white;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.InteractividadAutomata">
    <children>
-      <JFXButton fx:id="btnConvertirDeterministico" disable="true" layoutX="18.0" layoutY="428.0" onAction="#convertirDeterministico" text="Convertir a Deterministico">
+      <JFXButton fx:id="btnConvertirDeterministico" disable="true" layoutX="18.0" layoutY="428.0" onAction="#convertirDeterministico" style="-fx-background-color: #03A9F4;" text="Convertir a Deterministico">
          <font>
             <Font size="15.0" />
          </font>
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor>
       </JFXButton>
       <Label fx:id="lblEsDeterministico" layoutX="22.0" layoutY="320.0" text="¿Es determinístico?">
          <font>
@@ -31,10 +35,13 @@
             <Font size="15.0" />
          </font>
       </JFXCheckBox>
-      <JFXButton fx:id="btnSimplificar" buttonType="RAISED" layoutX="220.0" layoutY="367.0" onAction="#simplificar" style="-fx-background-color: #2196F3;" text="Simplificar el Autómata">
+      <JFXButton fx:id="btnSimplificar" buttonType="RAISED" layoutX="220.0" layoutY="367.0" onAction="#simplificar" style="-fx-background-color: #03A9F4;" text="Simplificar el Autómata">
          <font>
             <Font size="15.0" />
          </font>
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor>
       </JFXButton>
       <JFXButton fx:id="btnProbarAutomata" layoutX="220.0" layoutY="428.0" onAction="#probarAutomata" text="Probar el Autómata">
          <font>
@@ -46,38 +53,56 @@
             <Font size="15.0" />
          </font>
       </JFXTextField>
-      <JFXButton fx:id="btnGuardarEnDisco" buttonType="RAISED" layoutX="220.0" layoutY="315.0" onAction="#guardarEnDisco" style="-fx-background-color: #2196F3;" text="Guardar en Disco">
+      <JFXButton fx:id="btnGuardarEnDisco" buttonType="RAISED" layoutX="220.0" layoutY="315.0" onAction="#guardarEnDisco" style="-fx-background-color: #03A9F4;" text="Guardar en Disco">
          <font>
             <Font size="15.0" />
          </font>
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor>
       </JFXButton>
-      <JFXButton fx:id="btnGenerarPdf" buttonType="RAISED" layoutX="417.0" layoutY="315.0" onAction="#generarPdf" style="-fx-background-color: #2196F3;" text="Generar PDF">
+      <JFXButton fx:id="btnGenerarPdf" buttonType="RAISED" layoutX="417.0" layoutY="315.0" onAction="#generarPdf" style="-fx-background-color: #03A9F4;" text="Generar PDF">
          <font>
             <Font size="15.0" />
          </font>
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor>
       </JFXButton>
-      <JFXButton fx:id="btnNuevoAutomata" buttonType="RAISED" layoutX="417.0" layoutY="367.0" onAction="#nuevoAutomata" style="-fx-background-color: #2196F3;" text="Crear Nuevo Autómata">
+      <JFXButton fx:id="btnNuevoAutomata" buttonType="RAISED" layoutX="417.0" layoutY="367.0" onAction="#nuevoAutomata" style="-fx-background-color: #03A9F4;" text="Crear Nuevo Autómata">
          <font>
             <Font size="15.0" />
          </font>
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor>
       </JFXButton>
       <Label layoutX="14.0" layoutY="14.0" text="*Recuerda que puedes modificar los estados del autómata cuando lo desees, solo con dar clic en la transición." />
       <Pane fx:id="panelTabla" layoutX="14.0" layoutY="31.0" prefHeight="250.0" prefWidth="360.0">
          <children>
-            <TableView fx:id="tableView" onMouseClicked="#focusAutomataUno" prefHeight="250.0" prefWidth="360.0" />
+            <TableView fx:id="tableView" onMouseClicked="#focusAutomataUno" prefHeight="250.0" prefWidth="360.0" style="-fx-border-color: #03A9F4; -fx-border-width: 4px;" />
          </children>
       </Pane>
-      <JFXButton fx:id="btnOtroAutomata" buttonType="RAISED" layoutX="581.0" layoutY="315.0" onAction="#cargarSegundoAutomata" style="-fx-background-color: #2196F3;" text="Cargar otro Autómata">
+      <JFXButton fx:id="btnOtroAutomata" buttonType="RAISED" layoutX="605.0" layoutY="315.0" onAction="#cargarSegundoAutomata" prefHeight="31.0" prefWidth="167.0" style="-fx-background-color: #03A9F4;" text="Cargar otro Autómata">
          <font>
             <Font size="15.0" />
          </font>
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor>
       </JFXButton>
       <Pane layoutX="417.0" layoutY="31.0" prefHeight="250.0" prefWidth="360.0">
          <children>
             <TableView fx:id="tableViewNuevoAutomata" onMouseClicked="#focusAutomataDos" prefHeight="250.0" prefWidth="360.0" />
          </children>
       </Pane>
-      <JFXButton fx:id="btnUnir" buttonType="RAISED" layoutX="605.0" layoutY="370.0" onAction="#operarAutomatas" ripplerFill="WHITE" style="-fx-background-color: #2196F3;" text="Unir" />
-      <JFXButton fx:id="btnIntersectar" buttonType="RAISED" layoutX="690.0" layoutY="370.0" onAction="#operarAutomatas" style="-fx-background-color: #2196F3;" text="Intersectar" />
+      <JFXButton fx:id="btnUnir" buttonType="RAISED" layoutX="605.0" layoutY="366.0" onAction="#operarAutomatas" prefHeight="31.0" prefWidth="72.0" ripplerFill="WHITE" style="-fx-background-color: #03A9F4;" text="Unir">
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor></JFXButton>
+      <JFXButton fx:id="btnIntersectar" buttonType="RAISED" layoutX="700.0" layoutY="366.0" onAction="#operarAutomatas" prefHeight="31.0" prefWidth="72.0" style="-fx-background-color: #03A9F4;" text="Intersectar">
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor></JFXButton>
    </children>
 </AnchorPane>

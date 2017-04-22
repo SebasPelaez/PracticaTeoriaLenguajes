@@ -30,11 +30,17 @@
          <font>
             <Font size="17.0" />
          </font>
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor>
       </JFXButton>
       <JFXButton fx:id="btnCargarAutomata" buttonType="RAISED" layoutX="230.0" layoutY="244.0" onAction="#cargarAutomata" style="-fx-background-color: #03A9F4;" text="Cargar Autómata">
          <font>
             <Font size="17.0" />
          </font>
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor>
       </JFXButton>
    </children>
 </AnchorPane>

@@ -6,7 +6,7 @@ import com.jfoenix.controls.JFXTextField;
 import handler.HandlerFile;
 import handler.Handler_Automata;
 import handler.Handler_ConstruirTransiciones;
-import handler.tableobserver.tableObserver;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -27,13 +27,14 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.ResourceBundle;
 
 /**
  * Created by Sebas on 3/04/2017.
  */
-public class InteractividadAutomata implements Initializable,tableObserver {
+public class InteractividadAutomata implements Initializable {
 
     @FXML
     private TableView<String[]> tableViewNuevoAutomata;
@@ -52,53 +53,84 @@ public class InteractividadAutomata implements Initializable,tableObserver {
     @FXML
     private JFXButton btnIntersectar;
 
-    private ArrayList<Handler_Automata> controladores;
+    @FXML
+    private JFXButton btnGuardarEnDisco;
+
+    @FXML
+    private JFXButton btnGenerarPdf;
+
+    @FXML
+    private JFXButton btnSimplificar;
+
+    @FXML
+    private JFXButton btnNuevoAutomata;
+
+    @FXML
+    private JFXButton btnOtroAutomata;
+
+
+
+    private Handler_Automata controlador;
     private int simbolosEntrada;
     private List<String[]> jdata;
     private ObservableList<String[]> datos;
     private Handler_ConstruirTransiciones controllerTransiciones;
-    private ArrayList<Automata> automatas;
-    private ArrayList<tableViewAutomata> tableViewAutomatas;
+    private Automata automata;
+    private Automata automata2;
+    private ArrayList<tableViewAutomata> automatas;
     private Alert alerta;
     private int focusAutomata;
 
     @FXML
     private void focusAutomataDos(MouseEvent evento) {
         focusAutomata=1;
-        validarDeterministico();
         System.out.println(focusAutomata);
+        tableView.setStyle("");
+        tableViewNuevoAutomata.setStyle("-fx-border-color:#FFA726; -fx-border-width:4px;");
+        cambiarColor("FFA726");
+    }
+
+
+    private void cambiarColor(String color){
+        btnUnir.setStyle("-fx-background-color: #"+color+";");
+        btnIntersectar.setStyle("-fx-background-color: #"+color+";");
+        btnConvertirDeterministico.setStyle("-fx-background-color: #"+color+";");
+        btnGuardarEnDisco.setStyle("-fx-background-color: #"+color+";");
+        btnGenerarPdf.setStyle("-fx-background-color: #"+color+";");
+        btnSimplificar.setStyle("-fx-background-color: #"+color+";");
+        btnNuevoAutomata.setStyle("-fx-background-color: #"+color+";");
+        btnOtroAutomata.setStyle("-fx-background-color: #"+color+";");
     }
 
     @FXML
     private void focusAutomataUno(MouseEvent evento) {
         focusAutomata=0;
-        validarDeterministico();
-        System.out.println(focusAutomata);
+        tableViewNuevoAutomata.setStyle("");
+        tableView.setStyle("-fx-border-color:#03A9F4; -fx-border-width:4px;");
+        cambiarColor("03A9F4");
     }
+
+
 
 
     @FXML
     private void convertirDeterministico(ActionEvent evento) {
-        controladores.get(focusAutomata).convertirAutomataAFN(false);
-        controladores.get(focusAutomata).imprimirAutomata();
-        tableViewAutomatas.get(focusAutomata).setAutomata(automatas.get(focusAutomata));
-        tableViewAutomatas.get(focusAutomata).recargarTabla();
-        validarDeterministico();
+        controlador.convertirAutomataAFN(false);
+        controlador.imprimirAutomata();
     }
 
     @FXML
     private void guardarEnDisco(ActionEvent evento) {
+
         HandlerFile handlerFile = new HandlerFile((Stage) ((Node) evento.getSource()).getScene().getWindow());
-        handlerFile.guardarAutomata(automatas.get(focusAutomata),true);
+        handlerFile.guardarAutomata(automata,true);
     }
 
     @FXML
     private void simplificar(ActionEvent evento) {
-        controladores.get(focusAutomata).imprimirAutomata();
-        controladores.get(focusAutomata).simplificarAutomata();
-        tableViewAutomatas.get(focusAutomata).setAutomata(automatas.get(focusAutomata));
-        tableViewAutomatas.get(focusAutomata).recargarTabla();
-        validarDeterministico();
+        controlador.imprimirAutomata();
+        controlador.simplificarAutomata();
+        //recargarTabla();
     }
 
     @FXML
@@ -106,7 +138,7 @@ public class InteractividadAutomata implements Initializable,tableObserver {
         alerta.setTitle("Alerta");
         alerta.getDialogPane().getChildren().stream().filter(node -> node instanceof Label).forEach(node -> ((Label) node).setMinHeight(Region.USE_PREF_SIZE));
         if (!txtHileraEvaluar.getText().equals("")) {
-            if (controladores.get(focusAutomata).reconocerSecuencia(txtHileraEvaluar.getText())) {
+            if (controlador.reconocerSecuencia(txtHileraEvaluar.getText())) {
                 alerta.setContentText("La secuencia es aceptada.");
                 alerta.showAndWait();
             } else {
@@ -129,66 +161,67 @@ public class InteractividadAutomata implements Initializable,tableObserver {
     @FXML
     private void operarAutomatas(ActionEvent evento){
         if(evento.getSource()== btnUnir){
-            controladores.get(focusAutomata).unirIntersectarAutomatas(automatas.get(1),false);
+            controlador.unirIntersectarAutomatas(automata2,false);
+
         }else{
-            controladores.get(focusAutomata).unirIntersectarAutomatas(automatas.get(1),true);
+            controlador.unirIntersectarAutomatas(automata2,true);
+        }
+        File file = new File("./src/temporal/temporal.txt");
+        if(file.exists()){
+            file.delete();
         }
     }
 
     @FXML
     private void nuevoAutomata(ActionEvent evento) throws IOException {
+        File file = new File("./src/temporal/temporal.txt");
+        if(file.exists()){
+            file.delete();
+        }
         transiciones(evento);
     }
+
+
 
     @FXML
     private void cargarSegundoAutomata(ActionEvent evento) throws IOException {
         HandlerFile handlerFile = new HandlerFile();
-        handlerFile.guardarAutomata(automatas.get(focusAutomata),false);
+        handlerFile.guardarAutomata(automata,false);
         transiciones(evento);
     }
 
     @Override
     public void initialize(URL location, ResourceBundle resources)  {
         File file = new File("./src/temporal/temporal.txt");
-        tableViewAutomatas = new ArrayList<>();
+        file.deleteOnExit();
         automatas = new ArrayList<>();
-        controladores = new ArrayList<>();
-
-        automatas.add(new Automata());//Creo el espacio para el automata uno
-        automatas.add(new Automata());//Creo el espacio para el automata Dos
-        controladores.add(new Handler_Automata(automatas.get(0)));//Creo el controlador para el primer automata
-        controladores.add(new Handler_Automata(automatas.get(1)));//Creo el controlador para el segundo automata
-        tableViewAutomatas.add(new tableViewAutomata());//Creo el controlador para la primer tabla de automatas
-        tableViewAutomatas.add(new tableViewAutomata());//Creo el controlador para la segunda tabla de automatas
-
         if(file.exists()){
             HandlerFile handlerFile = new HandlerFile();
             try {
-                automatas.set(1,handlerFile.crearAutomata("./src/temporal/temporal.txt")); //automata anterior
-                controladores.set(1,new Handler_Automata(automatas.get(1)));
+                automata2 = handlerFile.crearAutomata("./src/temporal/temporal.txt");//automata anterior
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            tableViewAutomatas.set(1,new tableViewAutomata(automatas.get(1),tableViewNuevoAutomata));
-            tableViewAutomatas.get(1).attach(this);
+            automatas.add(new tableViewAutomata(automata2,tableViewNuevoAutomata));
         }
     }
 
     public void initComponents(){
         alerta = new Alert(Alert.AlertType.WARNING);
-        focusAutomata = 0;
-        controladores.set(0,new Handler_Automata(automatas.get(0)));
-        controladores.get(0).sortEstadoInicial();
+        controlador = new Handler_Automata(automata);
+        controlador.sortEstadoInicial();
+        datos = FXCollections.observableArrayList();
+        jdata = new LinkedList<>(); //Here is the data
+        simbolosEntrada = 0;
         validarDeterministico();
-        tableViewAutomatas.set(0,new tableViewAutomata(automatas.get(0),tableView));
-        tableViewAutomatas.get(0).attach(this);
+        automatas.add(new tableViewAutomata(automata,tableView));
         tableView.setEditable(true);
     }
 
     private void validarDeterministico(){
         chkSiDeterministico.setSelected(false);
         chkNoDeterministico.setSelected(false);
-        if (controladores.get(focusAutomata).esDeterministico()) {
+        if (controlador.esDeterministico()) {
             chkSiDeterministico.setSelected(true);
             btnConvertirDeterministico.setDisable(true);
         } else {
@@ -198,7 +231,7 @@ public class InteractividadAutomata implements Initializable,tableObserver {
     }
 
     public void setAutomata(Automata automata){
-        automatas.set(0,automata);
+        this.automata = automata;
     } // nuevo automata
 
     private void print(final Node node) {
@@ -223,10 +256,4 @@ public class InteractividadAutomata implements Initializable,tableObserver {
         app_stage.show();
     }
 
-    @Override
-    public void update() {
-        automatas.set(focusAutomata,tableViewAutomatas.get(focusAutomata).getAutomata());
-        controladores.get(focusAutomata).setAutomata(automatas.get(focusAutomata));
-        validarDeterministico();
-    }
 }

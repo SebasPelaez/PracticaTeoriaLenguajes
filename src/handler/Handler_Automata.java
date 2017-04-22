@@ -455,8 +455,8 @@ public class Handler_Automata {
         for (int i = 0; i < automata2.getEstados().size(); i++) {
             automata.agregarEstado(automata2.getEstados().get(i));
         }
-        convertirAutomataAFN(op);
 
+        convertirAutomataAFN(op);
         simplificarAutomata();
     }
 
