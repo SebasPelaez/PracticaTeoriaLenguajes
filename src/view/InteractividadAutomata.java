@@ -19,10 +19,10 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Region;
 import javafx.stage.Stage;
 import model.Automata;
-
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -48,16 +48,12 @@ public class InteractividadAutomata implements Initializable {
     private JFXTextField txtHileraEvaluar;
     @FXML
     private JFXButton btnConvertirDeterministico;
-
     @FXML
     private JFXButton btnUnir;
-
     @FXML
     private JFXButton btnIntersectar;
 
-
     private Handler_Automata controlador;
-
     private int simbolosEntrada;
     private List<String[]> jdata;
     private ObservableList<String[]> datos;
@@ -66,14 +62,25 @@ public class InteractividadAutomata implements Initializable {
     private Automata automata2;
     private ArrayList<tableViewAutomata> automatas;
     private Alert alerta;
+    private int focusAutomata;
 
+    @FXML
+    private void focusAutomataDos(MouseEvent evento) {
+        focusAutomata=2;
+        System.out.println(focusAutomata);
+    }
+
+    @FXML
+    private void focusAutomataUno(MouseEvent evento) {
+        focusAutomata=1;
+        System.out.println(focusAutomata);
+    }
 
 
     @FXML
     private void convertirDeterministico(ActionEvent evento) {
         controlador.convertirAutomataAFN(false);
         controlador.imprimirAutomata();
-        //recargarTabla();
     }
 
     @FXML
