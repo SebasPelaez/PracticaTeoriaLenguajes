@@ -110,9 +110,6 @@ public class InteractividadAutomata implements Initializable,tableObserver {
         validarDeterministico();
     }
 
-
-
-
     @FXML
     private void convertirDeterministico(ActionEvent evento) {
         controladores.get(focusAutomata).convertirAutomataAFN(false);
@@ -166,9 +163,9 @@ public class InteractividadAutomata implements Initializable,tableObserver {
     @FXML
     private void operarAutomatas(ActionEvent evento){
         if(evento.getSource()== btnUnir){
-            controladores.get(focusAutomata).unirIntersectarAutomatas(automatas.get(1),false);
+            controladores.get(0).unirIntersectarAutomatas(automatas.get(1),false);
         }else{
-            controladores.get(focusAutomata).unirIntersectarAutomatas(automatas.get(1),true);
+            controladores.get(0).unirIntersectarAutomatas(automatas.get(1),true);
         }
     }
 
@@ -197,7 +194,6 @@ public class InteractividadAutomata implements Initializable,tableObserver {
         tableViewAutomatas = new ArrayList<>();
         automatas = new ArrayList<>();
         controladores = new ArrayList<>();
-
         automatas.add(new Automata());//Creo el espacio para el automata uno
         automatas.add(new Automata());//Creo el espacio para el automata Dos
         controladores.add(new Handler_Automata(automatas.get(0)));//Creo el controlador para el primer automata
@@ -215,6 +211,9 @@ public class InteractividadAutomata implements Initializable,tableObserver {
             }
             tableViewAutomatas.set(1,new tableViewAutomata(automatas.get(1),tableViewNuevoAutomata));
             tableViewAutomatas.get(1).attach(this);
+        }else{
+            btnUnir.setDisable(true);
+            btnIntersectar.setDisable(true);
         }
     }
 
