@@ -66,14 +66,12 @@ public class InteractividadAutomata implements Initializable,tableObserver {
     private void focusAutomataDos(MouseEvent evento) {
         focusAutomata=1;
         validarDeterministico();
-        System.out.println(focusAutomata);
     }
 
     @FXML
     private void focusAutomataUno(MouseEvent evento) {
         focusAutomata=0;
         validarDeterministico();
-        System.out.println(focusAutomata);
     }
 
 
