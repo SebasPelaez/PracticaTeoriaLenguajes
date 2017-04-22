@@ -111,6 +111,8 @@ public class InteractividadAutomata implements Initializable,tableObserver {
     }
 
 
+
+
     @FXML
     private void convertirDeterministico(ActionEvent evento) {
         controladores.get(focusAutomata).convertirAutomataAFN(false);
@@ -122,6 +124,7 @@ public class InteractividadAutomata implements Initializable,tableObserver {
 
     @FXML
     private void guardarEnDisco(ActionEvent evento) {
+
         HandlerFile handlerFile = new HandlerFile((Stage) ((Node) evento.getSource()).getScene().getWindow());
         handlerFile.guardarAutomata(automatas.get(focusAutomata),true);
     }
@@ -177,6 +180,8 @@ public class InteractividadAutomata implements Initializable,tableObserver {
         }
         transiciones(evento);
     }
+
+
 
     @FXML
     private void cargarSegundoAutomata(ActionEvent evento) throws IOException {
