@@ -334,7 +334,7 @@ public class Handler_Automata {
         return cont;
     }
 
-    public void convertirAutomataAFN(){
+    public void convertirAutomataAFN(boolean operacion){
         if(!esDeterministico()){
             if(masDeUnEstadoInicial()>=2){
                 setEstadosIniciales();
@@ -345,7 +345,7 @@ public class Handler_Automata {
                 Estado e = automata.getEstados().get(i);
                 ArrayList<Transicion> t = e.getTransiciones();
                 if(t.isEmpty()){
-                    setTransicionEstadoNuevo(e);
+                    setTransicionEstadoNuevo(e,operacion);
                     t = e.getTransiciones();
                     }
                     int j=0;
@@ -393,8 +393,8 @@ public class Handler_Automata {
         sortEstadoInicial();
     }
 
-    private void setTransicionEstadoNuevo(Estado e){
-        boolean aceptacion = false;
+    private void setTransicionEstadoNuevo(Estado e,boolean op){
+        boolean aceptacion = op;
         String[] nombre = e.getNombre().split("-");
         ArrayList<Estado> estadosAgregar;
         ArrayList<Transicion> transicion=new ArrayList<>();
@@ -403,7 +403,11 @@ public class Handler_Automata {
             estadosAgregar = new ArrayList<>();
             for (int i = 0; i < nombre.length; i++) {
                 Estado e1 = obtenerEstadosDeString(nombre[i]);
-                aceptacion = aceptacion|e1.isEsAceptacion();
+                if(!op){
+                    aceptacion = aceptacion|e1.isEsAceptacion();
+                }else{
+                    aceptacion = aceptacion&e1.isEsAceptacion();
+                }
                 Estado e2 = e1.getTransiciones().get(j).getEstadosFinales().get(0);
                 if(!estadosAgregar.contains(e2)){
                     estadosAgregar.add(e2);
@@ -442,4 +446,14 @@ public class Handler_Automata {
             }
         }
     }
+
+    public void unirIntersectarAutomatas(Automata automata2, boolean op){
+        for (int i = 0; i < automata2.getEstados().size(); i++) {
+            automata.agregarEstado(automata2.getEstados().get(i));
+        }
+        convertirAutomataAFN(op);
+
+        simplificarAutomata();
+    }
+
 }

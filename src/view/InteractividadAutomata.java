@@ -49,6 +49,11 @@ public class InteractividadAutomata implements Initializable {
     @FXML
     private JFXButton btnConvertirDeterministico;
 
+    @FXML
+    private JFXButton btnUnir;
+
+    @FXML
+    private JFXButton btnIntersectar;
 
 
     private Handler_Automata controlador;
@@ -58,7 +63,7 @@ public class InteractividadAutomata implements Initializable {
     private ObservableList<String[]> datos;
     private Handler_ConstruirTransiciones controllerTransiciones;
     private Automata automata;
-
+    private Automata automata2;
     private ArrayList<tableViewAutomata> automatas;
     private Alert alerta;
 
@@ -66,7 +71,7 @@ public class InteractividadAutomata implements Initializable {
 
     @FXML
     private void convertirDeterministico(ActionEvent evento) {
-        controlador.convertirAutomataAFN();
+        controlador.convertirAutomataAFN(false);
         controlador.imprimirAutomata();
         //recargarTabla();
     }
@@ -94,7 +99,7 @@ public class InteractividadAutomata implements Initializable {
                 alerta.setContentText("La secuencia es aceptada.");
                 alerta.showAndWait();
             } else {
-                alerta.setContentText("La secuencia No es aceptada.");
+                alerta.setContentText("La secuencia no es aceptada.");
                 alerta.showAndWait();
             }
         } else {
@@ -111,9 +116,21 @@ public class InteractividadAutomata implements Initializable {
     }
 
     @FXML
+    private void operarAutomatas(ActionEvent evento){
+        if(evento.getSource()== btnUnir){
+            controlador.unirIntersectarAutomatas(automata2,false);
+
+        }else{
+            controlador.unirIntersectarAutomatas(automata2,true);
+        }
+    }
+
+    @FXML
     private void nuevoAutomata(ActionEvent evento) throws IOException {
         transiciones(evento);
     }
+
+
 
     @FXML
     private void cargarSegundoAutomata(ActionEvent evento) throws IOException {
@@ -128,13 +145,12 @@ public class InteractividadAutomata implements Initializable {
         automatas = new ArrayList<>();
         if(file.exists()){
             HandlerFile handlerFile = new HandlerFile();
-            Automata nuevoAutomata = null;
             try {
-                nuevoAutomata = handlerFile.crearAutomata("./src/temporal/temporal.txt");
+                automata2 = handlerFile.crearAutomata("./src/temporal/temporal.txt");//automata anterior
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            automatas.add(new tableViewAutomata(nuevoAutomata,tableViewNuevoAutomata));
+            automatas.add(new tableViewAutomata(automata2,tableViewNuevoAutomata));
         }
     }
 
@@ -164,7 +180,7 @@ public class InteractividadAutomata implements Initializable {
 
     public void setAutomata(Automata automata){
         this.automata = automata;
-    }
+    } // nuevo automata
 
     private void print(final Node node) {
         // Create a printer job for the default printer
