@@ -48,44 +48,46 @@ public class tableViewAutomata implements tableObservable {
 
     public void inicializarColumnas() {
         TableColumn<String[], String> columna = null;
-        for (int i = 0; i <= automata.getSimbolos().length + 2; i++) {
-            int j = i;
-            if (i == 0) {
-                columna = new TableColumn<>("Estado/Símbolo");
-                columna.setPrefWidth(120);
-            } else {
-                if (i == automata.getSimbolos().length + 1) {
-                    columna = new TableColumn<>("Aceptación");
-                    columna.setPrefWidth(80);
+        if(automata.getEstados().size()!=0) {
+            for (int i = 0; i <= automata.getSimbolos().length + 2; i++) {
+                int j = i;
+                if (i == 0) {
+                    columna = new TableColumn<>("Estado/Símbolo");
+                    columna.setPrefWidth(120);
                 } else {
-                    if (i == automata.getSimbolos().length + 2) {
-                        columna = new TableColumn<>("Inicial");
-                        columna.setPrefWidth(90);
+                    if (i == automata.getSimbolos().length + 1) {
+                        columna = new TableColumn<>("Aceptación");
+                        columna.setPrefWidth(80);
                     } else {
-                        columna = new TableColumn<>(automata.getSimbolos()[i - 1]);
-                        columna.setCellFactory(TextFieldTableCell.forTableColumn());
-                        columna.setPrefWidth(70);
+                        if (i == automata.getSimbolos().length + 2) {
+                            columna = new TableColumn<>("Inicial");
+                            columna.setPrefWidth(90);
+                        } else {
+                            columna = new TableColumn<>(automata.getSimbolos()[i - 1]);
+                            columna.setCellFactory(TextFieldTableCell.forTableColumn());
+                            columna.setPrefWidth(70);
+                        }
                     }
-                }
 
-            }
-            columna.setCellValueFactory(cellData -> {
-                String[] rowData = cellData.getValue();
-                if (j >= rowData.length) {
-                    return new ReadOnlyStringWrapper("");
-                } else {
-                    String cellValue = rowData[j];
-                    return new ReadOnlyStringWrapper(cellValue);
                 }
-            });
-            columna.setOnEditCommit(event -> {
-                String[] row = event.getRowValue();
-                row[j] = event.getNewValue();
-                actualizarAutomata();
-                advise();
-            });
-            tableView.getColumns().addAll(columna);
-            simbolosEntrada++;
+                columna.setCellValueFactory(cellData -> {
+                    String[] rowData = cellData.getValue();
+                    if (j >= rowData.length) {
+                        return new ReadOnlyStringWrapper("");
+                    } else {
+                        String cellValue = rowData[j];
+                        return new ReadOnlyStringWrapper(cellValue);
+                    }
+                });
+                columna.setOnEditCommit(event -> {
+                    String[] row = event.getRowValue();
+                    row[j] = event.getNewValue();
+                    actualizarAutomata();
+                    advise();
+                });
+                tableView.getColumns().addAll(columna);
+                simbolosEntrada++;
+            }
         }
     }
 

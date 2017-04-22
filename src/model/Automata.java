@@ -16,7 +16,10 @@ public class Automata {
         this.simbolos = simbolos;
     }
 
-    public Automata(){}
+    public Automata(){
+        estados= new ArrayList<>();
+        simbolos = new String[0];
+    }
 
     public ArrayList<Estado> getEstados() {
         return estados;

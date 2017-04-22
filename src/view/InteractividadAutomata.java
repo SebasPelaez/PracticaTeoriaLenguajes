@@ -167,6 +167,11 @@ public class InteractividadAutomata implements Initializable,tableObserver {
         }else{
             controladores.get(0).unirIntersectarAutomatas(automatas.get(1),true);
         }
+        tableViewAutomatas.get(0).setAutomata(automatas.get(focusAutomata));
+        tableViewAutomatas.get(0).recargarTabla();
+        tableViewAutomatas.get(1).setAutomata(new Automata());
+        tableViewAutomatas.get(1).recargarTabla();
+        validarDeterministico();
     }
 
     @FXML
