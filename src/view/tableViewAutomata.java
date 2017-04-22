@@ -1,11 +1,11 @@
 package view;
 
-import handler.Handler_Automata;
 import handler.Handler_ConstruirTransiciones;
+import handler.tableobserver.tableObservable;
+import handler.tableobserver.tableObserver;
 import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.scene.control.Alert;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.TextFieldTableCell;
@@ -18,7 +18,7 @@ import java.util.List;
 /**
  * Created by Sebas on 20/04/2017.
  */
-public class tableViewAutomata {
+public class tableViewAutomata implements tableObservable {
 
     private TableView<String[]> tableView;
     private int simbolosEntrada;
@@ -26,12 +26,15 @@ public class tableViewAutomata {
     private ObservableList<String[]> datos;
     private Automata automata;
     private Handler_ConstruirTransiciones controllerTransiciones;
+    private tableObserver observador;
 
     public tableViewAutomata(Automata automata,TableView<String[]> tableView){
         this.automata = automata;
         this.tableView = tableView;
         initComponents();
     }
+
+    public tableViewAutomata(){}
 
     public void initComponents(){
         controllerTransiciones = new Handler_ConstruirTransiciones(automata);
@@ -79,6 +82,7 @@ public class tableViewAutomata {
                 String[] row = event.getRowValue();
                 row[j] = event.getNewValue();
                 actualizarAutomata();
+                advise();
             });
             tableView.getColumns().addAll(columna);
             simbolosEntrada++;
@@ -126,5 +130,22 @@ public class tableViewAutomata {
         controllerTransiciones.vaciarTransiciones();
         controllerTransiciones.guardarAutomata(tableView.getItems(),4);
         recargarTabla();
+    }
+
+    public void setAutomata(Automata automata){
+        this.automata=automata;
+    }
+
+    public Automata getAutomata(){
+        return automata;
+    }
+
+    public void attach(tableObserver observador){
+        this.observador=observador;
+    }
+
+    @Override
+    public void advise() {
+        observador.update();
     }
 }

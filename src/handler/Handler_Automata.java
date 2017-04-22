@@ -17,6 +17,10 @@ public class Handler_Automata {
         this.automata = automata;
     }
 
+    public void setAutomata(Automata automata){
+        this.automata=automata;
+    }
+
     public Estado obtenerEstadoInicial(){
         Estado e = null;
         for (int i = 0; i < automata.getEstados().size(); i++) {
