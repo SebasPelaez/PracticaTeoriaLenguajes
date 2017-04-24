@@ -162,6 +162,20 @@ public class InteractividadAutomata implements Initializable,tableObserver {
 
     @FXML
     private void operarAutomatas(ActionEvent evento){
+        alerta.setTitle("Información");
+        alerta.getDialogPane().getChildren().stream().filter(node -> node instanceof Label).forEach(node -> ((Label) node).setMinHeight(Region.USE_PREF_SIZE));
+        int i=0;
+        for(Handler_Automata k: controladores){
+            if(!k.esDeterministico()) {
+                alerta.setContentText("Como el autómata " + i + " es no deterministico, se convertirá a deterministico");
+                alerta.showAndWait();
+                controladores.get(i).convertirAutomataAFN(false);
+            }
+            controladores.get(i).simplificarAutomata();
+            i++;
+        }
+        alerta.setContentText("Los automatas se simplificaran primero.");
+        alerta.showAndWait();
         if(evento.getSource()== btnUnir){
             controladores.get(0).unirIntersectarAutomatas(automatas.get(1),false);
         }else{
@@ -196,6 +210,7 @@ public class InteractividadAutomata implements Initializable,tableObserver {
     public void initialize(URL location, ResourceBundle resources)  {
         File file = new File("./src/temporal/temporal.txt");
         file.deleteOnExit();
+
         tableViewAutomatas = new ArrayList<>();
         automatas = new ArrayList<>();
         controladores = new ArrayList<>();
