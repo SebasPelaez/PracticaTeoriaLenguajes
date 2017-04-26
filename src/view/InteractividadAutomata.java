@@ -163,6 +163,24 @@ public class InteractividadAutomata implements Initializable,tableObserver {
     @FXML
     private void operarAutomatas(ActionEvent evento){
         if(controladores.get(0).validarSimbolos(automatas.get(1))){
+
+            alerta.setTitle("Información");
+            alerta.getDialogPane().getChildren().stream().filter(node -> node instanceof Label).forEach(node -> ((Label) node).setMinHeight(Region.USE_PREF_SIZE));
+            int i=0;
+            for(Handler_Automata k: controladores){
+                if(!k.esDeterministico()) {
+                    alerta.setContentText("Como el autómata " + i + " es no deterministico, se convertirá a deterministico");
+                    alerta.showAndWait();
+                    controladores.get(i).convertirAutomataAFN(false);
+                }
+                controladores.get(i).simplificarAutomata();
+                i++;
+            }
+            alerta.setContentText("Los automatas se simplificaran primero.");
+            alerta.showAndWait();
+
+
+
             if(evento.getSource()== btnUnir){
                 controladores.get(0).unirIntersectarAutomatas(automatas.get(1),false);
             }else{
@@ -178,6 +196,30 @@ public class InteractividadAutomata implements Initializable,tableObserver {
             alerta.showAndWait();
         }
 
+        alerta.setTitle("Información");
+        alerta.getDialogPane().getChildren().stream().filter(node -> node instanceof Label).forEach(node -> ((Label) node).setMinHeight(Region.USE_PREF_SIZE));
+        int i=0;
+        for(Handler_Automata k: controladores){
+            if(!k.esDeterministico()) {
+                alerta.setContentText("Como el autómata " + i + " es no deterministico, se convertirá a deterministico");
+                alerta.showAndWait();
+                controladores.get(i).convertirAutomataAFN(false);
+            }
+            controladores.get(i).simplificarAutomata();
+            i++;
+        }
+        alerta.setContentText("Los automatas se simplificaran primero.");
+        alerta.showAndWait();
+        if(evento.getSource()== btnUnir){
+            controladores.get(0).unirIntersectarAutomatas(automatas.get(1),false);
+        }else{
+            controladores.get(0).unirIntersectarAutomatas(automatas.get(1),true);
+        }
+        tableViewAutomatas.get(0).setAutomata(automatas.get(focusAutomata));
+        tableViewAutomatas.get(0).recargarTabla();
+        tableViewAutomatas.get(1).setAutomata(new Automata());
+        tableViewAutomatas.get(1).recargarTabla();
+        validarDeterministico();
     }
 
     @FXML
