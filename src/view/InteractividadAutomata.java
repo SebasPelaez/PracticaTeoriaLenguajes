@@ -162,16 +162,22 @@ public class InteractividadAutomata implements Initializable,tableObserver {
 
     @FXML
     private void operarAutomatas(ActionEvent evento){
-        if(evento.getSource()== btnUnir){
-            controladores.get(0).unirIntersectarAutomatas(automatas.get(1),false);
+        if(controladores.get(0).validarSimbolos(automatas.get(1))){
+            if(evento.getSource()== btnUnir){
+                controladores.get(0).unirIntersectarAutomatas(automatas.get(1),false);
+            }else{
+                controladores.get(0).unirIntersectarAutomatas(automatas.get(1),true);
+            }
+            tableViewAutomatas.get(0).setAutomata(automatas.get(focusAutomata));
+            tableViewAutomatas.get(0).recargarTabla();
+            tableViewAutomatas.get(1).setAutomata(new Automata());
+            tableViewAutomatas.get(1).recargarTabla();
+            validarDeterministico();
         }else{
-            controladores.get(0).unirIntersectarAutomatas(automatas.get(1),true);
+            alerta.setContentText("Los símbolos de entrada de ambos autómatas debe ser igual.");
+            alerta.showAndWait();
         }
-        tableViewAutomatas.get(0).setAutomata(automatas.get(focusAutomata));
-        tableViewAutomatas.get(0).recargarTabla();
-        tableViewAutomatas.get(1).setAutomata(new Automata());
-        tableViewAutomatas.get(1).recargarTabla();
-        validarDeterministico();
+
     }
 
     @FXML
