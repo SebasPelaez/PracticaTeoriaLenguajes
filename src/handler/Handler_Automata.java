@@ -460,4 +460,17 @@ public class Handler_Automata {
         simplificarAutomata();
     }
 
+    public boolean validarSimbolos(Automata a){
+      String simbolos = "";
+        for (int i = 0; i < a.getSimbolos().length; i++) {
+            simbolos += a.getSimbolos()[i];
+        }
+        for (int i = 0; i < automata.getSimbolos().length; i++) {
+            if(!simbolos.contains(automata.getSimbolos()[i])){
+                return false;
+            }
+        }
+        return true;
+    }
+
 }
