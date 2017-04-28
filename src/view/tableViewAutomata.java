@@ -81,14 +81,25 @@ public class tableViewAutomata implements tableObservable {
                 });
                 columna.setOnEditCommit(event -> {
                     String[] row = event.getRowValue();
+                    String temporalEstado = row[j];
                     row[j] = event.getNewValue();
-                    actualizarAutomata();
-                    advise();
+                    if(validarSiEstadosExisten()){
+                        actualizarAutomata();
+                        advise();
+                    }else{
+                       row[j]= temporalEstado;
+                       actualizarAutomata();
+                       advise();
+                    }
                 });
                 tableView.getColumns().addAll(columna);
                 simbolosEntrada++;
             }
         }
+    }
+
+    private boolean validarSiEstadosExisten() {
+        return controllerTransiciones.validarTransicionesCorrectas(tableView.getItems(),4);
     }
 
     private void agregarFilas() {
@@ -149,5 +160,10 @@ public class tableViewAutomata implements tableObservable {
     @Override
     public void advise() {
         observador.update();
+    }
+
+    public void resetTableView(TableView<String[]> tableView){
+        this.tableView = tableView;
+        tableView.getColumns().remove(0,automata.getSimbolos().length+3);
     }
 }

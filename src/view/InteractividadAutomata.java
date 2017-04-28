@@ -183,6 +183,7 @@ public class InteractividadAutomata implements Initializable,tableObserver {
         }
         tableViewAutomatas.get(0).setAutomata(automatas.get(focusAutomata));
         tableViewAutomatas.get(0).recargarTabla();
+        tableViewAutomatas.get(1).resetTableView(tableViewNuevoAutomata);
         tableViewAutomatas.get(1).setAutomata(new Automata());
         tableViewAutomatas.get(1).recargarTabla();
         validarDeterministico();

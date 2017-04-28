@@ -45,9 +45,14 @@ public class ConstruccionTransiciones implements Initializable {
     @FXML private void guardarAutomata(ActionEvent evento) throws IOException {
         alerta.setTitle("Alerta");
         alerta.getDialogPane().getChildren().stream().filter(node -> node instanceof Label).forEach(node -> ((Label)node).setMinHeight(Region.USE_PREF_SIZE));
-        if(controller.validarTransicionesCorrectas(tableView.getItems())){
-            controller.guardarAutomata(tableView.getItems(),0);
-            transiciones(evento,"Transiciones");
+        if(controller.validarTransicionesCorrectas(tableView.getItems(),0)){
+            if(controller.validarTransicionesError(tableView.getItems())){
+                controller.guardarAutomata(tableView.getItems(),0);
+                transiciones(evento,"Transiciones");
+            }else{
+                alerta.setContentText("Los estados de error solo tienen transiciones hacia si mismos");
+                alerta.showAndWait();
+            }
         }else{
             alerta.setContentText("LAS TRANSICIONES DEBEN SER A ESTADOS");
             alerta.showAndWait();
@@ -88,7 +93,11 @@ public class ConstruccionTransiciones implements Initializable {
                 if(i==0){
                     estados[i]=automata.getEstados().get(j).getNombre();
                 }else{
-                    estados[i]="Transición";
+                    if(automata.getEstados().get(j).is_error()){
+                        estados[i]=automata.getEstados().get(j).getNombre();
+                    }else{
+                        estados[i]="Transición";
+                    }
                 }
             }
             jdata.add(estados);

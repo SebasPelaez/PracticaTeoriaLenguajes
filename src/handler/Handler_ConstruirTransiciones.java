@@ -50,16 +50,37 @@ public class Handler_ConstruirTransiciones {
         return -1;
     }
 
-    public boolean validarTransicionesCorrectas(ObservableList data){
+    public boolean validarTransicionesCorrectas(ObservableList data,int bandera){
         Handler_Automata handler_automata = new Handler_Automata(automata);
         for (int i=0;i<data.size();i++){
             if (data.get(i) instanceof String[]) {
                 String[] t = (String[]) data.get(i);
-                for (int j=1;j<t.length;j++) {
+                for (int j=1;j<t.length-bandera;j++) {
                     String vectorEstados[] = t[j].split(",");
                     for (String cadena:vectorEstados){
                         if(!handler_automata.buscarEstado(cadena,automata.getEstados())){
                             return false;
+                        }
+                    }
+                }
+            }
+        }
+        return true;
+    }
+
+    public boolean validarTransicionesError(ObservableList data){
+        Handler_Automata handler_automata = new Handler_Automata(automata);
+        for (int i=0;i<data.size();i++){
+            if (data.get(i) instanceof String[]) {
+                String[] t = (String[]) data.get(i);
+                Estado e = handler_automata.obtenerEstadosDeString(t[0]);
+                if(e.is_error()){
+                    for (int j=1;j<t.length;j++) {
+                        String vectorEstados[] = t[j].split(",");
+                        for (String cadena:vectorEstados){
+                            if(!cadena.equals(e.getNombre())){
+                                return false;
+                            }
                         }
                     }
                 }
