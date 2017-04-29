@@ -81,6 +81,15 @@ public class Handler_ConstruirEstados {
         return true;
     }
 
+    public boolean esErrorYAceptacion(ObservableList<Estado> estados){
+        for(Estado e: estados){
+            if(e.is_Aceptacion() && e.is_error() || e.is_inicial() && e.is_error()){
+                return true;
+            }
+        }
+        return false;
+    }
+
     public boolean existeAceptacion(ObservableList<Estado> estados){
         int cont=0;
         for(Estado e: estados){
@@ -167,6 +176,9 @@ public class Handler_ConstruirEstados {
 
             if(estadosRepetidos(estados)){
                 valido.add("Hay estados con el mismo nombre.");
+            }
+            if(esErrorYAceptacion(estados)){
+                valido.add("El estado no puede ser de error y aceptación al mismo tiempo o inicial y de error.");
             }
 
         }

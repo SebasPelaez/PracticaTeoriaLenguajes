@@ -4,6 +4,8 @@ import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXTextField;
 import handler.Handler_ConstruirEstados;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
+import javafx.event.EventType;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -15,6 +17,7 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
+import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Region;
@@ -91,11 +94,18 @@ public class ConstruccionEstados implements Initializable {
 
 
     @FXML public void validarCaracter(KeyEvent e){
-        if(e.getCharacter().equals(",") && simboloAnt.equals(",") || e.getCharacter().equals(" ")){
-            e.consume();
+        if(txtSimbolos.getText().length()>0){
+            String a = txtSimbolos.getText().substring(txtSimbolos.getText().length()-1);
+            if(e.getCharacter().equals(",") && a.equals(",") || e.getCharacter().equals(" ") || e.getCharacter().matches("[¬°!#$\\[%+\\]&/()=?¡¨*;:.¿'|}{^~`´_-]")){
+                e.consume();
+            }
         }else{
-            simboloAnt = e.getCharacter();
+            if(e.getCharacter().equals(",") || e.getCharacter().matches("[¬°!#$%+&/(\\[)=\\]?¡¨*;:.¿'|}{^~`´_-]")){
+
+                e.consume();
+            }
         }
+
     }
 
     @FXML

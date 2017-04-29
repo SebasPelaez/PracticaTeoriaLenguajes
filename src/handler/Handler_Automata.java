@@ -404,6 +404,7 @@ public class Handler_Automata {
         ArrayList<Transicion> transicion=new ArrayList<>();
         for (int j = 0; j < automata.getSimbolos().length; j++) {
             Transicion t =new Transicion(automata.getSimbolos()[j]);
+            String simboloTransicion = automata.getSimbolos()[j];
             estadosAgregar = new ArrayList<>();
             for (int i = 0; i < nombre.length; i++) {
                 Estado e1 = obtenerEstadosDeString(nombre[i]);
@@ -412,7 +413,7 @@ public class Handler_Automata {
                 }else{
                     aceptacion = aceptacion&e1.isEsAceptacion();
                 }
-                Estado e2 = e1.getTransiciones().get(j).getEstadosFinales().get(0);
+                Estado e2 = obtenerTransicionSimbolo(e1,simboloTransicion).getEstadosFinales().get(0);
                 if(!estadosAgregar.contains(e2)){
                     estadosAgregar.add(e2);
                 }
@@ -423,6 +424,18 @@ public class Handler_Automata {
         e.setEsAceptacion(aceptacion);
         e.set_aceptacion(aceptacion);
         e.setTransiciones(transicion);
+    }
+
+    public Transicion obtenerTransicionSimbolo(Estado e, String s){
+        Transicion t;
+        for (int i = 0; i < e.getTransiciones().size(); i++){
+            t = e.getTransiciones().get(i);
+            if(t.getSimbolo().equals(s)){
+                return t;
+            }
+        }
+
+        return null;
     }
 
 
