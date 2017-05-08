@@ -98,7 +98,7 @@ public class InteractividadAutomata implements Initializable {
     private void generarPdf(ActionEvent evento) {
         Node source = (Node) evento.getSource();
         Parent a = source.getParent();
-        print(source);
+        print(a);
     }
 
     @FXML
