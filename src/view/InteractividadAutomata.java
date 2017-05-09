@@ -12,7 +12,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.print.PrinterJob;
+import javafx.print.*;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -20,7 +20,9 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableView;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Region;
+import javafx.scene.transform.Scale;
 import javafx.stage.Stage;
 import model.Automata;
 import java.io.File;
@@ -69,6 +71,9 @@ public class InteractividadAutomata implements Initializable,tableObserver {
 
     @FXML
     private JFXButton btnProbarAutomata;
+
+    @FXML
+    private AnchorPane paneTables;
 
 
 
@@ -160,9 +165,7 @@ public class InteractividadAutomata implements Initializable,tableObserver {
 
     @FXML
     private void generarPdf(ActionEvent evento) {
-        Node source = (Node) evento.getSource();
-        Parent a = source.getParent();
-        print(a);
+        print(paneTables);
     }
 
     @FXML
@@ -304,16 +307,20 @@ public class InteractividadAutomata implements Initializable,tableObserver {
     } // nuevo automata
 
     private void print(final Node node) {
-        // Create a printer job for the default printer
+        Printer printer = Printer.getDefaultPrinter();
+        PageLayout pageLayout
+                = printer.createPageLayout(Paper.NA_LETTER, PageOrientation.LANDSCAPE, Printer.MarginType.HARDWARE_MINIMUM);
+        PrinterAttributes attr = printer.getPrinterAttributes();
         PrinterJob job = PrinterJob.createPrinterJob();
-        if (job != null) {
-            // Print the node
-            boolean printed = job.printPage(node);
-            if (printed) {
-                // End the printer job
+
+        if (job != null && job.showPrintDialog(node.getScene().getWindow())) {
+            boolean success = job.printPage(pageLayout, node);
+            if (success) {
                 job.endJob();
+
             }
         }
+
     }
 
     private void transiciones(ActionEvent event) throws IOException {
