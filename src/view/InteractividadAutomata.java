@@ -118,6 +118,7 @@ public class InteractividadAutomata implements Initializable,tableObserver {
     private void convertirDeterministico(ActionEvent evento) {
         controladores.get(focusAutomata).convertirAutomataAFN(false);
         controladores.get(focusAutomata).imprimirAutomata();
+        controladores.get(focusAutomata).simplificarAutomata();
         tableViewAutomatas.get(focusAutomata).setAutomata(automatas.get(focusAutomata));
         tableViewAutomatas.get(focusAutomata).recargarTabla();
         validarDeterministico();

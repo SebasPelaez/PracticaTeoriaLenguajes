@@ -65,18 +65,13 @@ public class Handler_Automata {
     }
 
     private boolean validarSecuencia(String cadena) {
-        String simb[] = cadena.split(",");
-        int cont=0;
-        for(String simbolo: simb){
-            for(String simbolosReal: automata.getSimbolos()){
-                if(!simbolo.equals(simbolosReal)){
-                    cont++;
-                }
-            }
-            if(cont>=automata.getSimbolos().length){
+        String concatSimbolos="";
+        for (String simbolos : automata.getSimbolos()) {
+            concatSimbolos+=simbolos;
+        }
+        for(int i=0;i<cadena.length();i++) {
+            if(!concatSimbolos.contains(""+cadena.charAt(i)))
                 return false;
-            }
-            cont=0;
         }
         return true;
     }
@@ -366,35 +361,39 @@ public class Handler_Automata {
             }
             String nuevoEstado="";
             int i =0;
-            while(i < automata.getEstados().size()){
+            while(i < automata.getEstados().size()) {
                 Estado e = automata.getEstados().get(i);
                 ArrayList<Transicion> t = e.getTransiciones();
-                if(t.isEmpty()){
-                    setTransicionEstadoNuevo(e,operacion);
+                if (t.isEmpty()) {
+                    setTransicionEstadoNuevo(e, operacion);
                     t = e.getTransiciones();
-                    }
-                    int j=0;
-                    while (j< t.size()){
-                        if(t.get(j).getEstadosFinales().size()>=2){
-                            int k=0;
-                            Estado e2;
-                            while(k< t.get(j).getEstadosFinales().size()){
-                                nuevoEstado += t.get(j).getEstadosFinales().get(k).getNombre()+"-";
-                                k++;
-                            }
-                            nuevoEstado = validarQueNoEsteString(nuevoEstado);
-                            nuevoEstado = nuevoEstado.substring(0,nuevoEstado.length()-1);
-                            e2= new Estado(nuevoEstado);
+                }
+                int j = 0;
+                while (j < t.size()) {
+                    if (t.get(j).getEstadosFinales().size() >= 2) {
+                        int k = 0;
+                        Estado e2;
+                        while (k < t.get(j).getEstadosFinales().size()) {
+                            nuevoEstado += t.get(j).getEstadosFinales().get(k).getNombre() + "-";
+                            k++;
+                        }
+                        nuevoEstado = validarQueNoEsteString(nuevoEstado);
+                        nuevoEstado = nuevoEstado.substring(0, nuevoEstado.length() - 1);
+                        if (!buscarEstado(nuevoEstado, automata.getEstados())) {
+                            e2 = new Estado(nuevoEstado);
                             t.get(j).getEstadosFinales().clear();
                             t.get(j).agregarEstadoFinal(e2);
-                            if(!buscarEstado(e2.getNombre(),automata.getEstados())) {
-                                automata.agregarEstado(e2);
-                            }
-                            nuevoEstado="";
+                            automata.agregarEstado(e2);
+                        }else{
+                            e2=obtenerEstadosDeString(nuevoEstado);
+                            t.get(j).getEstadosFinales().clear();
+                            t.get(j).agregarEstadoFinal(e2);
                         }
-
-                        j++;
+                        nuevoEstado = "";
                     }
+
+                    j++;
+                }
 
                 i++;
             }
