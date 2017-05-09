@@ -67,6 +67,9 @@ public class InteractividadAutomata implements Initializable,tableObserver {
     @FXML
     private JFXButton btnOtroAutomata;
 
+    @FXML
+    private JFXButton btnProbarAutomata;
+
 
 
     private ArrayList<Handler_Automata> controladores;
@@ -99,6 +102,7 @@ public class InteractividadAutomata implements Initializable,tableObserver {
         btnSimplificar.setStyle("-fx-background-color: #"+color+";");
         btnNuevoAutomata.setStyle("-fx-background-color: #"+color+";");
         btnOtroAutomata.setStyle("-fx-background-color: #"+color+";");
+        btnProbarAutomata.setStyle("-fx-background-color: #"+color+";");
     }
 
     @FXML
@@ -157,7 +161,7 @@ public class InteractividadAutomata implements Initializable,tableObserver {
     private void generarPdf(ActionEvent evento) {
         Node source = (Node) evento.getSource();
         Parent a = source.getParent();
-        print(source);
+        print(a);
     }
 
     @FXML

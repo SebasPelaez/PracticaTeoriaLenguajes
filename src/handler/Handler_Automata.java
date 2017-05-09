@@ -33,31 +33,52 @@ public class Handler_Automata {
     }
 
     public boolean reconocerSecuencia(String s){
-        Estado estadoActual = obtenerEstadoInicial();
-        if(s.isEmpty() && estadoActual.isEsAceptacion()){
-            return true;
-        }
-        int i = 0;
-        int j = 0;
-        char[] c = s.toCharArray();
-        String actualSimbolo;
-        Transicion t;
-        while(i < s.length()){
-            actualSimbolo = String.valueOf(c[i]);
-            t = estadoActual.getTransiciones().get(j);
-            if(t.getSimbolo().equals(actualSimbolo)){
-                estadoActual = t.getEstadosFinales().get(0);
-                if(estadoActual.isEsError()){
-                    return false;
-                }
-                j=0;
-                i++;
-            }else{
-                j++;
+        if(validarSecuencia(s)){
+            Estado estadoActual = obtenerEstadoInicial();
+            if(s.isEmpty() && estadoActual.isEsAceptacion()){
+                return true;
             }
+            int i = 0;
+            int j = 0;
+            char[] c = s.toCharArray();
+            String actualSimbolo;
+            Transicion t;
+            while(i < s.length()){
+                actualSimbolo = String.valueOf(c[i]);
+                t = estadoActual.getTransiciones().get(j);
+                if(t.getSimbolo().equals(actualSimbolo)){
+                    estadoActual = t.getEstadosFinales().get(0);
+                    if(estadoActual.isEsError()){
+                        return false;
+                    }
+                    j=0;
+                    i++;
+                }else{
+                    j++;
+                }
 
+            }
+            return estadoActual.isEsAceptacion();
+        }else{
+            return false;
         }
-        return estadoActual.isEsAceptacion();
+    }
+
+    private boolean validarSecuencia(String cadena) {
+        String simb[] = cadena.split(",");
+        int cont=0;
+        for(String simbolo: simb){
+            for(String simbolosReal: automata.getSimbolos()){
+                if(!simbolo.equals(simbolosReal)){
+                    cont++;
+                }
+            }
+            if(cont>=automata.getSimbolos().length){
+                return false;
+            }
+            cont=0;
+        }
+        return true;
     }
 
     public boolean esDeterministico() {
