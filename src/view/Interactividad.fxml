@@ -78,11 +78,6 @@
          </cursor>
       </JFXButton>
       <Label layoutX="14.0" layoutY="14.0" text="*Recuerda que puedes modificar los estados del autómata cuando lo desees, solo con dar clic en la transición." />
-      <Pane fx:id="panelTabla" layoutX="14.0" layoutY="31.0" prefHeight="250.0" prefWidth="360.0">
-         <children>
-            <TableView fx:id="tableView" onMouseClicked="#focusAutomataUno" prefHeight="250.0" prefWidth="360.0" style="-fx-border-color: #03A9F4; -fx-border-width: 4px;" />
-         </children>
-      </Pane>
       <JFXButton fx:id="btnOtroAutomata" buttonType="RAISED" layoutX="628.0" layoutY="316.0" onAction="#cargarSegundoAutomata" prefHeight="31.0" prefWidth="167.0" style="-fx-background-color: #03A9F4;" text="Cargar otro Autómata">
          <font>
             <Font size="15.0" />
@@ -91,11 +86,6 @@
             <Cursor fx:constant="HAND" />
          </cursor>
       </JFXButton>
-      <Pane layoutX="422.0" layoutY="31.0" prefHeight="250.0" prefWidth="373.0">
-         <children>
-            <TableView fx:id="tableViewNuevoAutomata" onMouseClicked="#focusAutomataDos" prefHeight="250.0" prefWidth="373.0" />
-         </children>
-      </Pane>
       <JFXButton fx:id="btnUnir" buttonType="RAISED" layoutX="628.0" layoutY="367.0" onAction="#operarAutomatas" prefHeight="31.0" prefWidth="72.0" ripplerFill="WHITE" style="-fx-background-color: #03A9F4;" text="Unir">
          <cursor>
             <Cursor fx:constant="HAND" />
@@ -104,5 +94,11 @@
          <cursor>
             <Cursor fx:constant="HAND" />
          </cursor></JFXButton>
+      <AnchorPane fx:id="paneTables" layoutX="7.0" layoutY="8.0" prefHeight="283.0" prefWidth="815.0">
+         <children>
+            <TableView fx:id="tableView" layoutX="14.0" layoutY="26.0" onMouseClicked="#focusAutomataUno" prefHeight="250.0" prefWidth="360.0" style="-fx-border-color: #03A9F4; -fx-border-width: 4px;" />
+            <TableView fx:id="tableViewNuevoAutomata" layoutX="428.0" layoutY="26.0" onMouseClicked="#focusAutomataDos" prefHeight="250.0" prefWidth="373.0" />
+         </children>
+      </AnchorPane>
    </children>
 </AnchorPane>
