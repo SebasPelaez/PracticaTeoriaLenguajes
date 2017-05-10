@@ -400,6 +400,9 @@ public class Handler_Automata {
         }
     }
 
+    /**
+     * Une los estados iniciales del autómata en un solo estado.
+     */
     private void setEstadosIniciales(){
         String estadosIniciales="";
         for (int i = 0; i < automata.getEstados().size(); i++) {
@@ -484,6 +487,11 @@ public class Handler_Automata {
         }
     }
 
+    /**
+     * Prepara los autómatas para su unión o intersección.
+     * @param automata2 autómata que será unido o intersectado con el This.
+     * @param op Operación que será realizada ( unión o intersección).
+     */
     public void unirIntersectarAutomatas(Automata automata2, boolean op){
         for (int i = 0; i < automata2.getEstados().size(); i++) {
             automata.agregarEstado(automata2.getEstados().get(i));
