@@ -32,10 +32,13 @@ import java.util.Optional;
 import java.util.ResourceBundle;
 
 /**
- * Created by Sebas on 29/03/2017.
+ * Created by Sebas y Juan on 29/03/2017.
  */
 public class ConstruccionEstados implements Initializable {
 
+    /**
+     * Inyección de componentes.
+     */
     @FXML
     private Pane layout;
     @FXML
@@ -47,24 +50,33 @@ public class ConstruccionEstados implements Initializable {
     @FXML
     private JFXButton btnTransiciones;
 
+    /**
+     * Atributos de la clase.
+     */
     private String simboloAnt = "";
     private Automata automata;
-
     private Handler_ConstruirEstados controller;
-
     private Alert alerta = new Alert(Alert.AlertType.WARNING);
 
+    /**
+     * Esto método se encarga de agregar una nueva fila a la tabla.
+     * @param evento el evento del botón
+     */
     @FXML
     private void agregarEstado(ActionEvent evento) {
         Estado p1 = new Estado("Ingrese el estado aquí", false, false, false);
         tableView.getItems().addAll(p1);
     }
 
+    /**
+     * Cuando ingresamos estados de más que no queremos, este método los borra.
+     * @param evento La acción del botón.
+     */
     @FXML
     private void borrarEstado(ActionEvent evento) {
         alerta.setTitle("Alerta");
         alerta.getDialogPane().getChildren().stream().filter(node -> node instanceof Label).forEach(node -> ((Label)node).setMinHeight(Region.USE_PREF_SIZE));
-        if(tableView.getItems().size()!=0){
+        if(tableView.getItems().size()!=0){//Verifica que la tabla no este vacia.
             TextInputDialog dialog = new TextInputDialog();
             dialog.setTitle("Mensaje de borrado");
             dialog.setHeaderText("Estas a punto de borrar un estado");
@@ -92,7 +104,10 @@ public class ConstruccionEstados implements Initializable {
 
     }
 
-
+    /**
+     * Verifica que los caracteres que se ingresan para los símbolos no tengan caracteres equivocados.
+     * @param e La tecla que se presiono.
+     */
     @FXML public void validarCaracter(KeyEvent e){
         if(txtSimbolos.getText().length()>0){
             String a = txtSimbolos.getText().substring(txtSimbolos.getText().length()-1);
@@ -108,11 +123,15 @@ public class ConstruccionEstados implements Initializable {
 
     }
 
+    /**
+     * Se encagar de llevanos a la ventana de construir las transiciones.
+     * @param evento La acción del botoón.
+     * @throws IOException Por si existen errores con los archivos.
+     */
     @FXML
     private void construirTransiciones(ActionEvent evento) throws IOException {
-
         ArrayList<String> s = controller.validarAutomata(tableView.getItems(),txtSimbolos.getText());
-        if (s.isEmpty()){
+        if (s.isEmpty()){//Verifica que si hayan datos en las tablas.
             controller.agregarEstados(tableView.getItems());
             controller.agregarSimbolos(txtSimbolos.getText());
             controller.imprimirSimbolos();
@@ -130,6 +149,11 @@ public class ConstruccionEstados implements Initializable {
 
     }
 
+    /**
+     * Como esta clase es un controlador, se debe sobreescribir el método de inicializar. que es el encargado de cargar toda la vista.
+     * @param location
+     * @param resources
+     */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         automata= new Automata();
@@ -164,6 +188,11 @@ public class ConstruccionEstados implements Initializable {
         });
     }
 
+    /**
+     * Este método nos es util cuando vamos acambiar de pantallas, por ejemplo a la inicial.
+     * @param event El evento del botón.
+     * @throws IOException Por si sale un error con el archivo.
+     */
     private void transiciones(ActionEvent event) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getClassLoader().getResource("view/ConstruccionTransiciones_View.fxml"));
         Parent home_parent = (Parent)fxmlLoader.load();
@@ -175,19 +204,6 @@ public class ConstruccionEstados implements Initializable {
         app_stage.hide();
         app_stage.setScene(home_scene);
         app_stage.show();
-    }
-
-    private void print(Node node){
-        // Create a printer job for the default printer
-        PrinterJob job = PrinterJob.createPrinterJob();
-        if (job != null) {
-            // Print the node
-            boolean printed = job.printPage(node);
-            if (printed) {
-                // End the printer job
-                job.endJob();
-            }
-        }
     }
 
 }

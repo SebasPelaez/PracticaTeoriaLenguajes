@@ -32,9 +32,15 @@ import java.util.ResourceBundle;
  */
 public class ConstruccionTransiciones implements Initializable {
 
+    /**
+     * Inyección de componentes.
+     */
     @FXML private TableView<String[]> tableView;
     @FXML private JFXButton btnGuardar;
 
+    /**
+     * Atributos de clase.
+     */
     private int simbolosEntrada;
     private ObservableList<String[]> datos;
     private Handler_ConstruirTransiciones controller;
@@ -42,10 +48,15 @@ public class ConstruccionTransiciones implements Initializable {
     private Alert alerta = new Alert(Alert.AlertType.WARNING);
     private Automata automata;
 
+    /**
+     * Cuando se termina de ingresar todas las transiciones, este método guarda todos esto en el autómata.
+     * @param evento La acción del botón.
+     * @throws IOException
+     */
     @FXML private void guardarAutomata(ActionEvent evento) throws IOException {
         alerta.setTitle("Alerta");
         alerta.getDialogPane().getChildren().stream().filter(node -> node instanceof Label).forEach(node -> ((Label)node).setMinHeight(Region.USE_PREF_SIZE));
-        if(controller.validarTransicionesCorrectas(tableView.getItems(),0)){
+        if(controller.validarTransicionesCorrectas(tableView.getItems(),0)){//verifica que las transiciones si sean correctas.
             if(controller.validarTransicionesError(tableView.getItems())){
                 controller.guardarAutomata(tableView.getItems(),0);
                 transiciones(evento,"Transiciones");
@@ -60,17 +71,30 @@ public class ConstruccionTransiciones implements Initializable {
 
     }
 
+    /**
+     * Elimina todas las instancias de autómatas previos y vuelve a empezar.
+     * @param evento
+     * @throws IOException
+     */
     @FXML
     private void regresar(ActionEvent evento) throws IOException {
         automata = new Automata();
         transiciones(evento,"Principal");
     }
 
+    /**
+     * Como esta clase es un controlador, se debe sobreescribir el método de inicializar. que es el encargado de cargar toda la vista.
+     * @param location
+     * @param resources
+     */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
     }
 
+    /**
+     * Inicializa todos los componentes de la vista, permite que que se visualicen correctamente.
+     */
     public void initComponents(){
         controller = new Handler_ConstruirTransiciones(automata);
         datos = FXCollections.observableArrayList();
@@ -86,6 +110,9 @@ public class ConstruccionTransiciones implements Initializable {
         this.automata = automata;
     }
 
+    /**
+     * Lo que se hace en este método es llenar lla información de la tabla con las transiciones del autómata.
+     */
     private void agregarFilas() {
         for (int j=0;j<automata.getEstados().size();j++) {
             String[] estados = new String[simbolosEntrada];
@@ -105,6 +132,10 @@ public class ConstruccionTransiciones implements Initializable {
         datos = FXCollections.observableList(jdata);
     }
 
+    /**
+     * Este método lo que se encarga es de determinar según el autómata que recibe, cuantas columnas reserva en la
+     * tabla para los simbolos de entrada, adicional 2 columnas que muestran si se de aceptación e inicial.
+     */
     public void inicializarColumnas(){
         for (int i=0;i<=automata.getSimbolos().length;i++){
             TableColumn<String[], String> columna;
@@ -117,6 +148,9 @@ public class ConstruccionTransiciones implements Initializable {
                 columna.setCellFactory(TextFieldTableCell.forTableColumn());
                 columna.setPrefWidth(70);
             }
+            /**
+             * Esto se encarga de mantener la tabla actualizada.
+             */
             columna.setCellValueFactory(cellData -> {
                 String[] rowData = cellData.getValue();
                 if (j >= rowData.length) {
@@ -126,6 +160,10 @@ public class ConstruccionTransiciones implements Initializable {
                     return new ReadOnlyStringWrapper(cellValue);
                 }
             });
+            /**
+             * Esto se encarga de persistir los cambios que se hacen en la tabla al autómata, además es muy importante
+             * decir que avisa a la vista principal que algo se modifico.
+             */
             columna.setOnEditCommit(event -> {
                 String[] row = event.getRowValue();
                 row[j] = event.getNewValue();
@@ -135,6 +173,11 @@ public class ConstruccionTransiciones implements Initializable {
         }
     }
 
+    /**
+     * Este método nos es util cuando vamos acambiar de pantallas, por ejemplo a la inicial.
+     * @param event El evento del botón.
+     * @throws IOException Por si sale un error con el archivo.
+     */
     private void transiciones(ActionEvent event,String ventana) throws IOException {
         Parent home_parent = null;
         switch (ventana){
