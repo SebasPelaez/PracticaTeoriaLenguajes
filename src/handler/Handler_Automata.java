@@ -7,12 +7,16 @@ import model.Transicion;
 import java.util.ArrayList;
 
 /**
- * Created by Sebas on 1/04/2017.
+ * Created by Sebas y Juan on 1/04/2017.
  */
 public class Handler_Automata {
 
     private Automata automata;
 
+    /**
+     * Constructor.
+     * @param automata El autómata que setearemos.
+     */
     public Handler_Automata(Automata automata){
         this.automata = automata;
     }
@@ -21,6 +25,10 @@ public class Handler_Automata {
         this.automata=automata;
     }
 
+    /**
+     * Retorna el primer estado incicial.
+     * @return Estado inicial.
+     */
     public Estado obtenerEstadoInicial(){
         Estado e = null;
         for (int i = 0; i < automata.getEstados().size(); i++) {
@@ -76,6 +84,10 @@ public class Handler_Automata {
         return true;
     }
 
+    /**
+     * Verifica si el autómata es determinístico.
+     * @return Verdadero en caso de que si lo sea, falso de lo contrario.
+     */
     public boolean esDeterministico() {
         int cont = 0;
         for (int i = 0; i < automata.getEstados().size(); i++) {
@@ -83,10 +95,10 @@ public class Handler_Automata {
                 cont++;
             }
         }
-        if (cont >=2){
+        if (cont >=2){//Si tiene mas de dos estados iniciales no.
             return false;
         }else{
-            for (int i = 0; i < automata.getEstados().size(); i++) {
+            for (int i = 0; i < automata.getEstados().size(); i++) {//verifica que no tenga transiciones a mas de un estado.
                 Estado e = automata.getEstados().get(i);
                 int numTran = e.getTransiciones().size();
                 for (int j = 0; j < numTran; j++) {
@@ -101,12 +113,14 @@ public class Handler_Automata {
         return true;
     }
 
+    /**
+     * Simplifica el autómata.
+     */
     public void simplificarAutomata(){
-        ArrayList<Estado> sinEstadosExtranios = quitarEstadosExtranios();
-        ArrayList<ArrayList<Estado>> estadosSimplificados = quitarEstadosEquivalentes(sinEstadosExtranios);
+        ArrayList<Estado> sinEstadosExtranios = quitarEstadosExtranios();//Guarda un arraylist sin los estados extraños
+        ArrayList<ArrayList<Estado>> estadosSimplificados = quitarEstadosEquivalentes(sinEstadosExtranios);//Guarda los conjuntos de estados.
         convertirEnNuevosEstados(estadosSimplificados);
-        sortEstadoInicial();
-        imprimirAutomata();
+        sortEstadoInicial();//pone el estado inicial de primero
     }
 
     private void convertirEnNuevosEstados(ArrayList<ArrayList<Estado>> estadosSimplificados) {
@@ -137,6 +151,11 @@ public class Handler_Automata {
     }
 
 
+    /**
+     * Indica hacia que punto deben ir las transiciones creadas en los diferentes conjuntos de estaods.
+     * @param estadosSimplificados Todos los conjuntos de estados.
+     * @param estados EL estado al cual se le setearan las transiciones.
+     */
     public void validarTransiciones(ArrayList<ArrayList<Estado>> estadosSimplificados,ArrayList<Estado> estados){
         ArrayList<Transicion> transiciones;
         Transicion nuevaTransicion;
@@ -154,6 +173,12 @@ public class Handler_Automata {
         }
     }
 
+    /**
+     * Verifica si el conjunto de estados es de aceptación.
+     * @param estadosSimplificados El conjunto de estados.
+     * @param i Indica cual subconjunto de estados se va a analizar.
+     * @return Verdadero en caso de que el sbconjunto sea de aceptación.
+     */
     public boolean validarAceptacion(ArrayList<ArrayList<Estado>> estadosSimplificados,int i){
         int j=0;
         while (j<estadosSimplificados.get(i).size() && !estadosSimplificados.get(i).get(j).isEsAceptacion()){
@@ -162,6 +187,12 @@ public class Handler_Automata {
         return j<estadosSimplificados.get(i).size();
     }
 
+    /**
+     * Verifica si el conjunto de estados es inicial.
+     * @param estadosSimplificados El conjunto de estados.
+     * @param i Indica cual subconjunto de estados se va a analizar.
+     * @return Verdadero en caso de que el sbconjunto sea inicial.
+     */
     public boolean validarInicial(ArrayList<ArrayList<Estado>> estadosSimplificados,int i){
         int j=0;
         while (j<estadosSimplificados.get(i).size() && !estadosSimplificados.get(i).get(j).isEsInicial()){
@@ -170,14 +201,18 @@ public class Handler_Automata {
         return j<estadosSimplificados.get(i).size();
     }
 
+    /**
+     * Verifica a cuales estados nunca se accede y los quita.
+     * @return ArrayList con todos los estados que no son extraños, osea a los que si se puede llegar.
+     */
     private ArrayList<Estado> quitarEstadosExtranios() {
         ArrayList<Estado> estados = new ArrayList<>();
         Estado nuevoEstado = automata.getEstados().get(0);
         estados.add(nuevoEstado);
         boolean bandera=true;
         int seguimientoEstado=0;
-        while (seguimientoEstado<estados.size()){
-            for (int i=0;i<estados.get(seguimientoEstado).getTransiciones().size();i++){
+        while (seguimientoEstado<estados.size()){//Hace esto mientras que haya estados por analizar.
+            for (int i=0;i<estados.get(seguimientoEstado).getTransiciones().size();i++){//Valida en todas las posibles transiciones.
                 String transicion= estados.get(seguimientoEstado).getTransiciones().get(i).getEstadosFinales().get(0).getNombre();
                 if(!buscarEstado(transicion,estados)){
                     nuevoEstado = estados.get(seguimientoEstado).getTransiciones().get(i).getEstadosFinales().get(0);
@@ -189,6 +224,12 @@ public class Handler_Automata {
         return estados;
     }
 
+    /**
+     * Busca un estado dentro de un conjunto de ellos.
+     * @param simboloBusqueda El estado que quiero buscar.
+     * @param arrayBusqueda El conjunto donde lo quiero buscar
+     * @return Verdader si lo encuentra.
+     */
     public boolean buscarEstado(String simboloBusqueda,ArrayList<Estado> arrayBusqueda){
         for (int i=0;i<arrayBusqueda.size();i++){
             if(arrayBusqueda.get(i).getNombre().equals(simboloBusqueda)){
@@ -198,11 +239,16 @@ public class Handler_Automata {
         return false;
     }
 
+    /**
+     * Crea grupos de estados que son equivalentes y que se pueden reemplazar por uno.
+     * @param estados Todos los estados que conforman el automara.
+     * @return Un conjunto, con conjuntos de estados equivalentes.
+     */
     public ArrayList<ArrayList<Estado>> quitarEstadosEquivalentes(ArrayList<Estado> estados){
         ArrayList<ArrayList<Estado>> estadosFinales = new ArrayList<>();
         ArrayList<Estado> pCero= new ArrayList<>();;
         ArrayList<Estado> pUno= new ArrayList<>();
-        for(int i=0;i<estados.size();i++){
+        for(int i=0;i<estados.size();i++){//Pone todos lo estados de aceptación en un conjunto y los de rechazo en otro.
             if(estados.get(i).isEsAceptacion()){
                 pUno.add(estados.get(i));
             }else{
@@ -213,18 +259,18 @@ public class Handler_Automata {
         estadosFinales.add(pUno);
         int seguimientoEstadosFinales=0;
         boolean bandera=false;
-        while (seguimientoEstadosFinales<estadosFinales.size() &&!bandera){
+        while (seguimientoEstadosFinales<estadosFinales.size() &&!bandera){//mientras haya conjuntos que analizar.
             int j=0;
-            while (j<automata.getSimbolos().length && !bandera){
+            while (j<automata.getSimbolos().length && !bandera){ //Dentro de todas las transiciones.
                 ArrayList<String> nombresEstados = new ArrayList<>();
                 int i=0;
-                while (i<estadosFinales.get(seguimientoEstadosFinales).size()) {
+                while (i<estadosFinales.get(seguimientoEstadosFinales).size()) { //Obtiene los nombres de los estados a los cuales va un cojunto determinado.
                     ArrayList<Transicion> transicions = estadosFinales.get(seguimientoEstadosFinales).get(i).getTransiciones();
                     nombresEstados.add(transicions.get(j).getEstadosFinales().get(0).getNombre());
                     i++;
                 }
                 ArrayList<Estado> temporal = validarConjuntosDeEstados(seguimientoEstadosFinales,estadosFinales,nombresEstados);
-                if(temporal.size()!=0){
+                if(temporal.size()!=0){//Si el subconjunto de estados no se separo entonces avanza con el siguiente subconjunto.
                     estadosFinales.add(temporal);
                     seguimientoEstadosFinales=0;
                     bandera=true;
@@ -234,11 +280,15 @@ public class Handler_Automata {
             }
             if(!bandera)seguimientoEstadosFinales++;
             bandera=false;
-            quitarEstadosNulos(estadosFinales);
+            quitarEstadosNulos(estadosFinales);//Puede llegar a pasar que haya subconjuntos si estados, en ese caso estarian nulos, por ende se eliminan.
         }
         return estadosFinales;
     }
 
+    /**
+     * Los subconjuntos que esten nulos, se quitan.
+     * @param estadosFinales El paquete con todos los conjuntos.
+     */
     private void quitarEstadosNulos(ArrayList<ArrayList<Estado>> estadosFinales) {
         for (int i=0;i<estadosFinales.size();i++){
             if(estadosFinales.get(i).size()==0){
@@ -247,14 +297,21 @@ public class Handler_Automata {
         }
     }
 
+    /**
+     * Verifica que los subconjuntos de estados tengan transiciones a estados que esten dentro del mismo subconjunto.
+     * @param d En cual Subconjunto estoy parado.
+     * @param estadosFinales El paquete completo de todos los conjuntos de estados.
+     * @param nombresEstados Los nombres de los estados a los cuales se dirige.
+     * @return Un subconjunto de estados al cual todos su estados tienen transiciones dentro de si mismos.
+     */
     public ArrayList<Estado> validarConjuntosDeEstados(int d,ArrayList<ArrayList<Estado>> estadosFinales,ArrayList<String> nombresEstados){
         ArrayList<Estado> nuevoArray= new ArrayList<>();
         boolean bandera=false;
         int x=-1;
         int j=0;
-        if(!validarQueTodosEsten(estadosFinales,nombresEstados)){
-            while (!bandera && j<nombresEstados.size()){
-                if(!buscarEstado(nombresEstados.get(j),estadosFinales.get(d))) {
+        if(!validarQueTodosEsten(estadosFinales,nombresEstados)){//Verifica que todos los estados tengan transiciones al mismo subconjunto.
+            while (!bandera && j<nombresEstados.size()){// Si hay datos por analizar y no he encontrado uno que no pertenezca.
+                if(!buscarEstado(nombresEstados.get(j),estadosFinales.get(d))) {//Si el estado tiene transición a un estado que esta en el mismo conjunto.
                     nuevoArray.add(estadosFinales.get(d).get(j));
                     estadosFinales.get(d).remove(estadosFinales.get(d).get(j));
                     x = buscarEnLista(estadosFinales, nombresEstados.get(j));
@@ -264,8 +321,8 @@ public class Handler_Automata {
                     j++;
                 }
             }
-            if(bandera){
-                while (j<nombresEstados.size()){
+            if(bandera){//si no encontro cambios.
+                while (j<nombresEstados.size()){//Realice esto mientras haya datos por analizar.
                     if(buscarEstado(nombresEstados.get(j),estadosFinales.get(x))){
                         nuevoArray.add(estadosFinales.get(d).get(j));
                         estadosFinales.get(d).remove(estadosFinales.get(d).get(j));
@@ -279,6 +336,12 @@ public class Handler_Automata {
         return nuevoArray;
     }
 
+    /**
+     * Indica en cual subcinjunto de estados esta un conjunto.
+     * @param estadosFinales Todos el paquete de conjuntos de estados.
+     * @param nombreEstado EL estado que estoy buscando.
+     * @return EL indice en del subconjunto en el cual esta el estado.
+     */
     public int buscarEnLista(ArrayList<ArrayList<Estado>> estadosFinales,String nombreEstado){
         for (int i=0;i<estadosFinales.size();i++){
             if(buscarEstado(nombreEstado,estadosFinales.get(i))){
@@ -288,12 +351,18 @@ public class Handler_Automata {
         return -1;
     }
 
+    /**
+     * Controla que las transiciones de un subconjunto de estados vayan al mismo lado.
+     * @param estadosFinales El paquete con todas los subconjuntos de estados.
+     * @param nombresEstados El nombre de todos los estados a los cuales se crea transicion
+     * @return verdadero si todos los estados estan en el mismo subconjunto.
+     */
     public boolean validarQueTodosEsten(ArrayList<ArrayList<Estado>> estadosFinales,ArrayList<String> nombresEstados){
         int j=0;
         boolean bandera=true;
-        int i=dondeEstaLaTransicion(estadosFinales,nombresEstados.get(0));
+        int i=dondeEstaLaTransicion(estadosFinales,nombresEstados.get(0));//identifica a donde deben buscar.
         bandera=true;
-        while (bandera && j<nombresEstados.size()){
+        while (bandera && j<nombresEstados.size()){//Mientras los estados esten juntos y haya datos por analizar.
             if(!buscarEstado(nombresEstados.get(j),estadosFinales.get(i))) {
                 bandera=false;
             }else{
@@ -303,6 +372,12 @@ public class Handler_Automata {
         return bandera;
     }
 
+    /**
+     * Mètodo que identifica en que subconjunto esta una estado.
+     * @param estados El paquete con todos los subconjuntos de estados.
+     * @param valor La transicin que estoy buscando.
+     * @return EL subconjunto en el cual esta ese valor.
+     */
     public int dondeEstaLaTransicion(ArrayList<ArrayList<Estado>> estados,String valor){
         int i=0;
         boolean bandera=true;
@@ -334,6 +409,11 @@ public class Handler_Automata {
         }
     }
 
+    /**
+     * Retorna la dirección de memoria del estado.
+     * @param s El no,bre del estado.
+     * @return La dirección de memoria.
+     */
     public Estado obtenerEstadosDeString(String s){
         for (int i = 0; i < automata.getEstados().size(); i++) {
             if(automata.getEstados().get(i).getNombre().equals(s)){
@@ -459,7 +539,11 @@ public class Handler_Automata {
     }
 
 
-
+    /**
+     * Caoncatena un estado con el nuevo nombre
+     * @param a Un String mal formado.
+     * @return El Estado bien nombrado.
+     */
     public String validarQueNoEsteString(String a){
         String b[] = a.split("-");
         String retornoVerdadero="";
@@ -471,6 +555,9 @@ public class Handler_Automata {
         return retornoVerdadero;
     }
 
+    /**
+     * Ordena por estado inicial el automata, pone arriba los estados iniciales.
+     */
     public void sortEstadoInicial(){
         for (int i=0;i<automata.getEstados().size();i++){
             for(int j=i+1;j<automata.getEstados().size();j++){
@@ -488,7 +575,6 @@ public class Handler_Automata {
         for (int i = 0; i < automata2.getEstados().size(); i++) {
             automata.agregarEstado(automata2.getEstados().get(i));
         }
-
         convertirAutomataAFN(op);
         simplificarAutomata();
     }

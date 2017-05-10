@@ -22,7 +22,6 @@ import javafx.scene.control.TableView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Region;
-import javafx.scene.transform.Scale;
 import javafx.stage.Stage;
 import model.Automata;
 import java.io.File;
@@ -33,10 +32,14 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 /**
- * Created by Sebas on 3/04/2017.
+ * Created by Sebas y Juan on 3/04/2017.
+ * Es la vista que nos muestra todas las opciones y acciones a ejecutar sobre el autómata.
  */
 public class InteractividadAutomata implements Initializable,tableObserver {
 
+    /**
+     * Inyección de componentes.
+     */
     @FXML
     private TableView<String[]> tableViewNuevoAutomata;
     @FXML
@@ -75,8 +78,9 @@ public class InteractividadAutomata implements Initializable,tableObserver {
     @FXML
     private AnchorPane paneTables;
 
-
-
+    /**
+     * Atributos de la clase
+     */
     private ArrayList<Handler_Automata> controladores;
     private int simbolosEntrada;
     private List<String[]> jdata;
@@ -87,17 +91,36 @@ public class InteractividadAutomata implements Initializable,tableObserver {
     private Alert alerta;
     private int focusAutomata;
 
+    /**
+     * Identifica cual automáta se selecciono.
+     * @param evento EL evento del botón.
+     */
     @FXML
     private void focusAutomataDos(MouseEvent evento) {
         focusAutomata=1;
         validarDeterministico();
-        System.out.println(focusAutomata);
         tableView.setStyle("");
         tableViewNuevoAutomata.setStyle("-fx-border-color:#FFA726; -fx-border-width:4px;");
         cambiarColor("FFA726");
     }
 
+    /**
+     * Identifica cual automáta se selecciono.
+     * @param evento EL evento del botón.
+     */
+    @FXML
+    private void focusAutomataUno(MouseEvent evento) {
+        focusAutomata=0;
+        validarDeterministico();
+        tableViewNuevoAutomata.setStyle("");
+        tableView.setStyle("-fx-border-color:#03A9F4; -fx-border-width:4px;");
+        cambiarColor("03A9F4");
+    }
 
+    /**
+     * Cambia el estilo a los componentes.
+     * @param color El color por el cual va a cambiar.
+     */
     private void cambiarColor(String color){
         btnUnir.setStyle("-fx-background-color: #"+color+";");
         btnIntersectar.setStyle("-fx-background-color: #"+color+";");
@@ -110,15 +133,10 @@ public class InteractividadAutomata implements Initializable,tableObserver {
         btnProbarAutomata.setStyle("-fx-background-color: #"+color+";");
     }
 
-    @FXML
-    private void focusAutomataUno(MouseEvent evento) {
-        focusAutomata=0;
-        tableViewNuevoAutomata.setStyle("");
-        tableView.setStyle("-fx-border-color:#03A9F4; -fx-border-width:4px;");
-        cambiarColor("03A9F4");
-        validarDeterministico();
-    }
-
+    /**
+     * Ejecuta la acción en el controlador de convertir el automata seleccionado a deterministico, en caso tal de que no lo sea.
+     * @param evento El evento del botón.
+     */
     @FXML
     private void convertirDeterministico(ActionEvent evento) {
         controladores.get(focusAutomata).convertirAutomataAFN(false);
@@ -129,13 +147,20 @@ public class InteractividadAutomata implements Initializable,tableObserver {
         validarDeterministico();
     }
 
+    /**
+     * Guarda en formato txt el autómata generado.
+     * @param evento El evento del botón.
+     */
     @FXML
     private void guardarEnDisco(ActionEvent evento) {
-
         HandlerFile handlerFile = new HandlerFile((Stage) ((Node) evento.getSource()).getScene().getWindow());
         handlerFile.guardarAutomata(automatas.get(focusAutomata),true);
     }
 
+    /**
+     * Ejecuta en el controlador el método de simplificar el autómata seleccionado.
+     * @param evento El evento del botón.
+     */
     @FXML
     private void simplificar(ActionEvent evento) {
         controladores.get(focusAutomata).imprimirAutomata();
@@ -145,11 +170,15 @@ public class InteractividadAutomata implements Initializable,tableObserver {
         validarDeterministico();
     }
 
+    /**
+     * Ejecuta en el controlador el método que verifica si se acepta o no unasecuencia en el autómata seleccionado.
+     * @param evento El evento del botón.
+     */
     @FXML
     private void probarAutomata(ActionEvent evento) {
         alerta.setTitle("Alerta");
         alerta.getDialogPane().getChildren().stream().filter(node -> node instanceof Label).forEach(node -> ((Label) node).setMinHeight(Region.USE_PREF_SIZE));
-        if (!txtHileraEvaluar.getText().equals("")) {
+        if (!txtHileraEvaluar.getText().equals("")) {//realiza validación de que el campo no este vacio.
             if (controladores.get(focusAutomata).reconocerSecuencia(txtHileraEvaluar.getText())) {
                 alerta.setContentText("La secuencia es aceptada.");
                 alerta.showAndWait();
@@ -163,19 +192,26 @@ public class InteractividadAutomata implements Initializable,tableObserver {
         }
     }
 
+    /**
+     * Ejecuta el método de imprimir en PDF.
+     * @param evento El evento del botón.
+     */
     @FXML
     private void generarPdf(ActionEvent evento) {
         print(paneTables);
     }
 
+    /**
+     * Este metodo se encarga de unir o intersectar los autómatas dependiendo de la acción que se seleccione.
+     * @param evento El evento del botón.
+     */
     @FXML
     private void operarAutomatas(ActionEvent evento){
-        if(controladores.get(0).validarSimbolos(automatas.get(1))){
-
+        if(controladores.get(0).validarSimbolos(automatas.get(1))){//Valida que tengan los mismos simbolos de entrada
             alerta.setTitle("Información");
             alerta.getDialogPane().getChildren().stream().filter(node -> node instanceof Label).forEach(node -> ((Label) node).setMinHeight(Region.USE_PREF_SIZE));
             int i=0;
-            for(Handler_Automata k: controladores){
+            for(Handler_Automata k: controladores){//Primero convierte los autómatas a deterministicos.
                 if(!k.esDeterministico()) {
                     alerta.setContentText("Como el autómata " + i + " es no deterministico, se convertirá a deterministico");
                     alerta.showAndWait();
@@ -186,9 +222,6 @@ public class InteractividadAutomata implements Initializable,tableObserver {
             }
             alerta.setContentText("Los automatas se simplificaran primero.");
             alerta.showAndWait();
-
-
-
             if(evento.getSource()== btnUnir){
                 controladores.get(0).unirIntersectarAutomatas(automatas.get(1),false);
             }else{
@@ -196,6 +229,7 @@ public class InteractividadAutomata implements Initializable,tableObserver {
             }
             tableViewAutomatas.get(0).setAutomata(automatas.get(focusAutomata));
             tableViewAutomatas.get(0).recargarTabla();
+            tableViewAutomatas.get(1).resetTableView(tableViewNuevoAutomata);
             tableViewAutomatas.get(1).setAutomata(new Automata());
             tableViewAutomatas.get(1).recargarTabla();
             validarDeterministico();
@@ -203,34 +237,13 @@ public class InteractividadAutomata implements Initializable,tableObserver {
             alerta.setContentText("Los símbolos de entrada de ambos autómatas debe ser igual.");
             alerta.showAndWait();
         }
-
-        alerta.setTitle("Información");
-        alerta.getDialogPane().getChildren().stream().filter(node -> node instanceof Label).forEach(node -> ((Label) node).setMinHeight(Region.USE_PREF_SIZE));
-        int i=0;
-        for(Handler_Automata k: controladores){
-            if(!k.esDeterministico()) {
-                alerta.setContentText("Como el autómata " + i + " es no deterministico, se convertirá a deterministico");
-                alerta.showAndWait();
-                controladores.get(i).convertirAutomataAFN(false);
-            }
-            controladores.get(i).simplificarAutomata();
-            i++;
-        }
-        alerta.setContentText("Los automatas se simplificaran primero.");
-        alerta.showAndWait();
-        if(evento.getSource()== btnUnir){
-            controladores.get(0).unirIntersectarAutomatas(automatas.get(1),false);
-        }else{
-            controladores.get(0).unirIntersectarAutomatas(automatas.get(1),true);
-        }
-        tableViewAutomatas.get(0).setAutomata(automatas.get(focusAutomata));
-        tableViewAutomatas.get(0).recargarTabla();
-        tableViewAutomatas.get(1).resetTableView(tableViewNuevoAutomata);
-        tableViewAutomatas.get(1).setAutomata(new Automata());
-        tableViewAutomatas.get(1).recargarTabla();
-        validarDeterministico();
     }
 
+    /**
+     * Borra todas las instancias de autómatas y empieza de cero.
+     * @param evento La acción del botón
+     * @throws IOException Por si sale un error con el archivo.
+     */
     @FXML
     private void nuevoAutomata(ActionEvent evento) throws IOException {
         File file = new File("./src/temporal/temporal.txt");
@@ -240,8 +253,11 @@ public class InteractividadAutomata implements Initializable,tableObserver {
         transiciones(evento);
     }
 
-
-
+    /**
+     * Guarda la instancia del automáta que ya hay creado para darle paso a la construcción de uno nuevo.
+     * @param evento la acción del botón
+     * @throws IOException Por si sale un error con el archvio.
+     */
     @FXML
     private void cargarSegundoAutomata(ActionEvent evento) throws IOException {
         HandlerFile handlerFile = new HandlerFile();
@@ -249,6 +265,11 @@ public class InteractividadAutomata implements Initializable,tableObserver {
         transiciones(evento);
     }
 
+    /**
+     * Como esta clase es un controlador, se debe sobreescribir el método de inicializar. que es el encargado de cargar toda la vista.
+     * @param location
+     * @param resources
+     */
     @Override
     public void initialize(URL location, ResourceBundle resources)  {
         File file = new File("./src/temporal/temporal.txt");
@@ -279,6 +300,9 @@ public class InteractividadAutomata implements Initializable,tableObserver {
         }
     }
 
+    /**
+     * Inicializar todos los componentes y también los atributos de la clase.
+     */
     public void initComponents(){
         alerta = new Alert(Alert.AlertType.WARNING);
         focusAutomata = 0;
@@ -290,6 +314,9 @@ public class InteractividadAutomata implements Initializable,tableObserver {
         tableView.setEditable(true);
     }
 
+    /**
+     * Se encarga de verificar si el autómata es deterministico para habilitar o dehabilitar las opciones.
+     */
     private void validarDeterministico(){
         chkSiDeterministico.setSelected(false);
         chkNoDeterministico.setSelected(false);
@@ -302,10 +329,18 @@ public class InteractividadAutomata implements Initializable,tableObserver {
         }
     }
 
+    /**
+     * Asigna el valor del autómata que entra por referencia.
+     * @param automata EL autómata que ingresa.
+     */
     public void setAutomata(Automata automata){
         automatas.set(0,automata);
     } // nuevo automata
 
+    /**
+     * Es el método encargado de generar el archivo PDF y tenerlo listo para imprimir.
+     * @param node
+     */
     private void print(final Node node) {
         Printer printer = Printer.getDefaultPrinter();
         PageLayout pageLayout
@@ -323,6 +358,11 @@ public class InteractividadAutomata implements Initializable,tableObserver {
 
     }
 
+    /**
+     * Este método nos es util cuando vamos acambiar de pantallas, por ejemplo a la inicial.
+     * @param event El evento del botón.
+     * @throws IOException Por si sale un error con el archivo.
+     */
     private void transiciones(ActionEvent event) throws IOException {
         Parent home_parent = FXMLLoader.load(getClass().getClassLoader().getResource("view/Principal.fxml"));
         Scene home_scene = new Scene(home_parent);
@@ -332,6 +372,9 @@ public class InteractividadAutomata implements Initializable,tableObserver {
         app_stage.show();
     }
 
+    /**
+     * Este es el escuchador de cambios en las vistas.
+     */
     @Override
     public void update() {
         automatas.set(focusAutomata,tableViewAutomatas.get(focusAutomata).getAutomata());
