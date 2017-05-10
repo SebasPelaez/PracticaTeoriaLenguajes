@@ -40,6 +40,11 @@ public class Handler_Automata {
         return e;
     }
 
+    /**
+     * Reconoce una hilera de caracteres ingresada al autómata.
+     * @param s hilera a ser reconocida por el autómata.
+     * @return Hilera aceptada o rechaza.
+     */
     public boolean reconocerSecuencia(String s){
         if(validarSecuencia(s)){
             Estado estadoActual = obtenerEstadoInicial();
@@ -72,6 +77,12 @@ public class Handler_Automata {
         }
     }
 
+    /**
+     * Valida que los símbolos de la hilera a reconocer esten en la colección de
+     * símbolos de entrada del autómata.
+     * @param cadena Hilera  que será procesada y a la cual se le verificarán sus caracteres.
+     * @return Hilera valida/rechazada.
+     */
     private boolean validarSecuencia(String cadena) {
         String concatSimbolos="";
         for (String simbolos : automata.getSimbolos()) {
@@ -137,6 +148,11 @@ public class Handler_Automata {
         automata.setEstados(estados);
     }
 
+    /**
+     * Concatena los nombres del array de estados que ingresa.
+     * @param estados array de estados.
+     * @return Nombre de los estados concatenado.
+     */
     private String concatenarNombres(ArrayList<Estado> estados){
         String apariciones="";
         for (int i = 0; i < estados.size(); i++) {
@@ -391,6 +407,9 @@ public class Handler_Automata {
         return i;
     }
 
+    /**
+     * Imprime el autómata en consola.
+     */
     public void imprimirAutomata(){
         for (String simbolo:automata.getSimbolos()){
             System.out.print("\t"+simbolo);
@@ -423,6 +442,10 @@ public class Handler_Automata {
         return null;
     }
 
+    /**
+     * Verfica si el autómata tiene mas de un estado inicial.
+     * @return Número de estado iniciales del autómata.
+     */
     private int masDeUnEstadoInicial(){
         int cont =0;
         for (int i = 0; i < automata.getEstados().size(); i++) {
@@ -434,6 +457,11 @@ public class Handler_Automata {
         return cont;
     }
 
+    /**
+     * Convierte el autómata a determinístico dado el caso que no lo sea.
+     * @param operacion Variable auxiliar para el manejo de la unión o intersección del
+     *                  autómata.
+     */
     public void convertirAutomataAFN(boolean operacion){
         if(!esDeterministico()){
             if(masDeUnEstadoInicial()>=2){
@@ -500,6 +528,12 @@ public class Handler_Automata {
         sortEstadoInicial();
     }
 
+    /**
+     * Asigna a los estado nuevos que se van creando en el proceso de conversión una
+     * nueva transición teniendo en cuenta los nombres de los estado con los que está compuesto.
+     * @param e Estado al cual se le asignarán sus respectivas transiciones.
+     * @param op Variable que controla la operación a realizar (unión o intersección).
+     */
     private void setTransicionEstadoNuevo(Estado e,boolean op){
         boolean aceptacion = op;
         String[] nombre = e.getNombre().split("-");
@@ -529,6 +563,13 @@ public class Handler_Automata {
         e.setTransiciones(transicion);
     }
 
+    /**
+     * Obtiene la transición  de dicho estado correspondiente a ese símbolo de entrada.
+     * @param e Estado del cual se desea extraer su respectiva transición de acuerdo al símbolo
+     *          de entrada.
+     * @param s Símbolo de entrada del cual se desea extraer la respectiva transición.
+     * @return Transición del respectivo símbolo de entrada para ese estado.
+     */
     public Transicion obtenerTransicionSimbolo(Estado e, String s){
         Transicion t;
         for (int i = 0; i < e.getTransiciones().size(); i++){
@@ -587,6 +628,12 @@ public class Handler_Automata {
         simplificarAutomata();
     }
 
+    /**
+     * Valida que cuando se haga una operación de unión o intersección entre 2
+     * autómatas, estos tengan los mismos símbolos de entrada.
+     * @param a Uno de los 2 autómatas a comparar (el otro es el this).
+     * @return Simbolos coinsiden/no coinsiden.
+     */
     public boolean validarSimbolos(Automata a){
       String simbolos = "";
         for (int i = 0; i < a.getSimbolos().length; i++) {
