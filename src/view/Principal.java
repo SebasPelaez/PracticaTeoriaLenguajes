@@ -17,10 +17,12 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 /**
- * Created by Sebas on 3/04/2017.
+ * Ventana inicial de la aplicación con las opciones de cargar o crear un nuevo autómata.
  */
 public class Principal implements Initializable {
-
+    /**
+     * Definción de los componentes visuales de la ventana.
+     */
     @FXML private JFXButton btnCrearAutomata;
     @FXML private JFXButton btnCargarAutomata;
 
@@ -32,11 +34,23 @@ public class Principal implements Initializable {
         transiciones(evento,1);
     }
 
+    /**
+     * Inicialización de la ventana
+     * @param location
+     * @param resources
+     */
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
     }
 
+    /**
+     * Carga la siguiente ventana dependiendo del botón clickedo
+     * @param event
+     * @param ventana Entero que indica que ventana se deberá desplegar;
+     * @throws IOException
+     */
     private void transiciones(ActionEvent event,int ventana) throws IOException {
         Parent home_parent=null;
         Stage escena = (Stage) ((Node) event.getSource()).getScene().getWindow();
